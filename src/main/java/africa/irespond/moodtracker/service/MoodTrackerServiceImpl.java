@@ -6,7 +6,10 @@ import africa.irespond.moodtracker.model.SocialMoodInfluence;
 import africa.irespond.moodtracker.model.MoodTracker;
 import africa.irespond.moodtracker.model.WeatherMoodInfluence;
 import africa.irespond.moodtracker.repository.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,6 +19,10 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
+@Configuration
+@EnableScheduling
+@RequiredArgsConstructor
+
 public class MoodTrackerServiceImpl implements MoodTrackerService{
     @Autowired
     private TrackerRepository trackerRepository;
@@ -72,6 +79,7 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
         trackerRepository.delete(foundTracker);
     }
 
+
     @Override
     public String calculateWeeklyMoodRate() {
         List<Integer> listOfRatings = new ArrayList<>();
@@ -81,6 +89,22 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
                 .mapToDouble(Integer::doubleValue)
                 .average()
                 .orElse(0.0);
-        return null;
+        dailyMoodTrackerRepository.deleteAll();
+        int weeklyRatingAsInt = (int) average;
+        MoodTracker moodTracker = new MoodTracker();
+        moodTracker.setRatings(weeklyRatingAsInt);
+        weeklyMoodTrackerRepository.save(moodTracker);
+
+        if(average > 4.0 && average <= 5.0) {
+            return "You had an excellent mood last week";
+        } else if (average > 3.0 && average <= 4.0) {
+            return "You had a very good mood last week";
+        } else if (average > 2.0 && average <= 3.0 ) {
+            return "You had a good mood last week";
+        } else if (average > 1.0 && average <= 2.0) {
+            return "You had a fair mood last week";
+        } else {
+            return "You had a poor mood last week";
+        }
     }
 }
