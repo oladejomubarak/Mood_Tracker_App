@@ -3,21 +3,17 @@ package africa.irespond.moodtracker.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
-
 @Entity
 @Data
-public class Tracker {
+public class MoodTracker {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    private LocalDate todayDate;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private String todayDate;
     private Mood mood;
     private SocialMoodInfluence socialMoodInfluence;
     private WeatherMoodInfluence weatherMoodInfluence;
     @Column(length = 5000)
     private String comment;
+    private int ratings;
 }
