@@ -15,5 +15,5 @@ public class MoodTracker {
     private WeatherMoodInfluence weatherMoodInfluence;
     @Column(length = 5000)
     private String comment;
-    private int ratings;
+    private double ratings;
 }

@@ -11,4 +11,10 @@ public interface MoodTrackerService {
     void deleteMoodTracker(Long moodTrackerId);
 
     String calculateWeeklyMoodRate();
+
+    String calculateMonthlyMoodRate();
+    String calculateAnnualMoodRate();
+
+
+
 }
