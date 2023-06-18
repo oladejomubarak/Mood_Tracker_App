@@ -138,7 +138,7 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
                 .average()
                 .orElse(0.0);
         weeklyMoodTrackerRepository.deleteAll(weeklyMoodTrackerRepository.findAll());
-        if(average > 0.0 && weeklyMoodTrackerRepository.findAll().size() > 0) {
+        if(average > 0.0 && ratingList.size() > 0) {
             MonthlyMoodTracker moodTracker = new MonthlyMoodTracker();
             moodTracker.setRatings(average);
             monthlyMoodTrackerRepository.save(moodTracker);
@@ -165,8 +165,8 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
                 .mapToDouble(Double::doubleValue)
                 .average()
                 .orElse(0.0);
-        monthlyMoodTrackerRepository.deleteAll();
-        if(average > 0.0 && monthlyMoodTrackerRepository.findAll().size() > 0) {
+        monthlyMoodTrackerRepository.deleteAll(monthlyMoodTrackerRepository.findAll());
+        if(average > 0.0 && ratingList.size() > 0) {
             AnnualMoodTracker moodTracker = new AnnualMoodTracker();
             moodTracker.setRatings(average);
             annualMoodTrackerRepository.save(moodTracker);
