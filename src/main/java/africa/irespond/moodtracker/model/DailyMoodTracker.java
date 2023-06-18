@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Entity
-public class DailyMoodTracker {
+public class DailyMoodTracker{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;

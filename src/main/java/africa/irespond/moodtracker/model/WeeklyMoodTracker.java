@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class WeeklyModTracker {
+public class WeeklyMoodTracker {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;

@@ -57,7 +57,26 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
            moodTracker.setRatings(5.0);
        }
         trackerRepository.save(moodTracker);
-        dailyMoodTrackerRepository.save(moodTracker);
+
+        DailyMoodTracker dailyMoodTracker = new DailyMoodTracker();
+        dailyMoodTracker.setMood(moodDto.getMood());
+        dailyMoodTracker.setComment(moodDto.getComment());
+        dailyMoodTracker.setSocialMoodInfluence(moodDto.getSocialMoodInfluence());
+        dailyMoodTracker.setWeatherMoodInfluence(moodDto.getWeatherMoodInfluence());
+        dailyMoodTracker.setTodayDate((LocalDate.now()).toString());
+        if(dailyMoodTracker.getMood().equals(Mood.VERY_SAD)){
+            dailyMoodTracker.setRatings(1.0);
+        } else if (dailyMoodTracker.getMood().equals(Mood.SAD)) {
+            dailyMoodTracker.setRatings(2.0);
+        } else if (dailyMoodTracker.getMood().equals(Mood.FAIR)) {
+            dailyMoodTracker.setRatings(3.0);
+        } else if (dailyMoodTracker.getMood().equals(Mood.HAPPY)) {
+            dailyMoodTracker.setRatings(4.0);
+        }else {
+            dailyMoodTracker.setRatings(5.0);
+        }
+        dailyMoodTrackerRepository.save(dailyMoodTracker);
+
         return moodTracker;
     }
 
@@ -91,9 +110,9 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
                 .mapToDouble(Double::doubleValue)
                 .average()
                 .orElse(0.0);
-        dailyMoodTrackerRepository.deleteAll();
-        if(average != 0.0 && listOfRatings.size() != 0) {
-            MoodTracker moodTracker = new MoodTracker();
+        dailyMoodTrackerRepository.deleteAll(dailyMoodTrackerRepository.findAll());
+        if(average > 0.0 && listOfRatings.size() > 0) {
+            WeeklyMoodTracker moodTracker = new WeeklyMoodTracker();
             moodTracker.setRatings(average);
             weeklyMoodTrackerRepository.save(moodTracker);
         }
@@ -118,9 +137,9 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
                 .mapToDouble(Double::doubleValue)
                 .average()
                 .orElse(0.0);
-        weeklyMoodTrackerRepository.deleteAll();
-        if(average != 0.0) {
-            MoodTracker moodTracker = new MoodTracker();
+        weeklyMoodTrackerRepository.deleteAll(weeklyMoodTrackerRepository.findAll());
+        if(average > 0.0 && weeklyMoodTrackerRepository.findAll().size() > 0) {
+            MonthlyMoodTracker moodTracker = new MonthlyMoodTracker();
             moodTracker.setRatings(average);
             monthlyMoodTrackerRepository.save(moodTracker);
         }
@@ -146,24 +165,24 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
                 .mapToDouble(Double::doubleValue)
                 .average()
                 .orElse(0.0);
-        monthlyMoodTrackerRepository.deleteAll();;
-        if(average != 0.0) {
-            MoodTracker moodTracker = new MoodTracker();
+        monthlyMoodTrackerRepository.deleteAll();
+        if(average > 0.0 && monthlyMoodTrackerRepository.findAll().size() > 0) {
+            AnnualMoodTracker moodTracker = new AnnualMoodTracker();
             moodTracker.setRatings(average);
             annualMoodTrackerRepository.save(moodTracker);
         }
 
         if(average > 4.0 && average <= 5.0) {
-            return "You had an excellent mood last month";
+            return "You had an excellent mood last year";
         } else if (average > 3.0 && average <= 4.0) {
-            return "You had a very good mood last month";
+            return "You had a very good mood last year";
         } else if (average > 2.0 && average <= 3.0 ) {
-            return "You had a good mood last month";
+            return "You had a good mood last year";
         } else if (average > 1.0 && average <= 2.0) {
-            return "You had a fair mood last month";
+            return "You had a fair mood last year";
         } else if (average > 0.0 && average <= 1.0){
-            return "You had a poor mood last month";
+            return "You had a poor mood last year";
         } else {
-            return "No mood was available to track last month";}
+            return "No mood was available to track last year";}
     }
 }
