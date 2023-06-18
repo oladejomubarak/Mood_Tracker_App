@@ -17,8 +17,16 @@ public class MoodTrackerController {
         return new ResponseEntity<>(moodTrackerService.createMood(moodDto), HttpStatus.OK);
     }
     @GetMapping("/find-mood/{moodTrackerId}")
-    public ResponseEntity<?> getMood(@ PathVariable Long moodTrackerId){
+    public ResponseEntity<?> getMood(@PathVariable Long moodTrackerId){
         return ResponseEntity.ok(moodTrackerService.findMood(moodTrackerId));
     }
-
+    @PatchMapping("/edit-mood{moodId}")
+    public ResponseEntity<?> editMood(@PathVariable Long moodId, MoodDto moodDto){
+        return ResponseEntity.ok(moodTrackerService.editMoodTracker(moodId, moodDto));
+    }
+    @DeleteMapping("delet-mood")
+    public ResponseEntity<?> deleteMood(@RequestParam Long moodTrackerId){
+        moodTrackerService.deleteMoodTracker(moodTrackerId);
+        return ResponseEntity.ok("mood tracker deleted");
+    }
 }

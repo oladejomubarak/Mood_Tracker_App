@@ -1,12 +1,11 @@
 package africa.irespond.moodtracker.service;
 
 import africa.irespond.moodtracker.dto.MoodDto;
-import africa.irespond.moodtracker.model.Mood;
-import africa.irespond.moodtracker.model.SocialMoodInfluence;
-import africa.irespond.moodtracker.model.MoodTracker;
-import africa.irespond.moodtracker.model.WeatherMoodInfluence;
+import africa.irespond.moodtracker.model.*;
 import africa.irespond.moodtracker.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -20,6 +19,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class MoodTrackerServiceImpl implements MoodTrackerService{
     @Autowired
     private TrackerRepository trackerRepository;
@@ -33,13 +34,16 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
     private AnnualMoodTrackerRepository annualMoodTrackerRepository;
 
 
+    private final ModelMapper modelMapper;
+
+
     @Override
     public MoodTracker createMood(MoodDto moodDto) {
         MoodTracker moodTracker = new MoodTracker();
-       moodTracker.setMood(Mood.valueOf(moodDto.getMood()));
+       moodTracker.setMood(moodDto.getMood());
        moodTracker.setComment(moodDto.getComment());
-       moodTracker.setSocialMoodInfluence(SocialMoodInfluence.valueOf(moodDto.getSocialMoodInfluence()));
-       moodTracker.setWeatherMoodInfluence(WeatherMoodInfluence.valueOf(moodDto.getWeatherMoodInfluence()));
+       moodTracker.setSocialMoodInfluence(moodDto.getSocialMoodInfluence());
+       moodTracker.setWeatherMoodInfluence(moodDto.getWeatherMoodInfluence());
        moodTracker.setTodayDate((LocalDate.now()).toString());
        if(moodTracker.getMood().equals(Mood.VERY_SAD)){
            moodTracker.setRatings(1.0);
@@ -66,8 +70,10 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
     @Override
     public MoodTracker editMoodTracker(Long moodTrackerId, MoodDto moodDto) {
         MoodTracker foundTracker = findMood(moodTrackerId);
+        modelMapper.getConfiguration().setSkipNullEnabled(true);
+        modelMapper.map(moodDto, foundTracker);
 
-        return null;
+        return foundTracker;
     }
 
     @Override
@@ -86,7 +92,7 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
                 .average()
                 .orElse(0.0);
         dailyMoodTrackerRepository.deleteAll();
-        if(average != 0.0) {
+        if(average != 0.0 && listOfRatings.size() != 0) {
             MoodTracker moodTracker = new MoodTracker();
             moodTracker.setRatings(average);
             weeklyMoodTrackerRepository.save(moodTracker);
@@ -113,10 +119,9 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
                 .average()
                 .orElse(0.0);
         weeklyMoodTrackerRepository.deleteAll();
-        int monthlyRatingAsInt = (int) average;
-        if(monthlyRatingAsInt != 0) {
+        if(average != 0.0) {
             MoodTracker moodTracker = new MoodTracker();
-            moodTracker.setRatings(monthlyRatingAsInt);
+            moodTracker.setRatings(average);
             monthlyMoodTrackerRepository.save(moodTracker);
         }
         if(average > 4.0 && average <= 5.0) {
@@ -135,17 +140,18 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
 
     @Override
     public String calculateAnnualMoodRate() {
-        List<Integer> ratingList = new ArrayList<>();
+        List<Double> ratingList = new ArrayList<>();
         monthlyMoodTrackerRepository.findAll().forEach(tracker -> ratingList.add(tracker.getRatings()));
         double average = ratingList.stream()
-                .mapToDouble(Integer::doubleValue)
+                .mapToDouble(Double::doubleValue)
                 .average()
                 .orElse(0.0);
-        monthlyMoodTrackerRepository.deleteAll();
-        int annualRatingAsInt = (int) average;
-        MoodTracker moodTracker = new MoodTracker();
-        moodTracker.setRatings(annualRatingAsInt);
-        annualMoodTrackerRepository.save(moodTracker);
+        monthlyMoodTrackerRepository.deleteAll();;
+        if(average != 0.0) {
+            MoodTracker moodTracker = new MoodTracker();
+            moodTracker.setRatings(average);
+            annualMoodTrackerRepository.save(moodTracker);
+        }
 
         if(average > 4.0 && average <= 5.0) {
             return "You had an excellent mood last month";

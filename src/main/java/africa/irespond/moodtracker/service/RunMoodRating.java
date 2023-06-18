@@ -22,18 +22,18 @@ public class RunMoodRating {
         System.out.println(moodSummary);
         System.out.println("weekly rating scheduler ran");
     }
-   // @Scheduled(cron = "0 */3 * * * *") // Runs every 30 minutes for testing
-   //@Scheduled(cron = "0 */3 * * * *") // Runs monthly
+    @Scheduled(cron = "0 */20 * * * *") // Runs every 20 minutes for testing
+   //@Scheduled(cron = "0 0 0 1 * *") // Runs monthly
     public void runMonthlyRatingSchedule(){
         String moodSummary = moodTrackerService.calculateMonthlyMoodRate();
         System.out.println(moodSummary);
-        System.out.println("weekly rating scheduler ran");
+        System.out.println("monthly rating scheduler ran");
     }
-    // @Scheduled(cron = "0 */3 * * * *") // Runs every 2 hours for testing
-    //@Scheduled(cron = "0 */3 * * * *") // Runs annually
+     @Scheduled(cron = "0 0 */1 * * *") // Runs every 1 hour for testing
+    //@Scheduled(cron = "0 0 0 1 1 *") // Runs annually
     public void runAnnualRatingSchedule(){
         String moodSummary = moodTrackerService.calculateAnnualMoodRate();
         System.out.println(moodSummary);
-        System.out.println("weekly rating scheduler ran");
+        System.out.println("annual rating scheduler ran");
     }
 }
