@@ -16,8 +16,10 @@ public class Entry {
     private String bodyWithText;
     @Column(length = 30000)
     private String bodyWithVoice;
-    private String createdDateAndTime;
-    private String updatedDateAndTime;
+    private String createdDate;
+    private String createdTime;
+    private String updatedDate;
+    private String updatedTime;
     private String createdBy;
     @ElementCollection
     private Set<String> categories = new HashSet<>();

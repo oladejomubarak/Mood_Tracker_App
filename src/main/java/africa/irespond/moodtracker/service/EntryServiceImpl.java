@@ -10,7 +10,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,11 @@ public class EntryServiceImpl implements EntryService{
     private EntryRepository entryRepository;
     @Autowired
     private ModelMapper modelMapper;
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private final String formattedDate = LocalDate.now().format(dateFormatter);
+    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+    private final String formattedTime = LocalTime.now().format(timeFormatter);
+
 
 
 
@@ -48,8 +55,10 @@ public class EntryServiceImpl implements EntryService{
         entry.getCategories().add(entryDto.getCategory());
         entry.setBodyWithText(entryDto.getBodyWithText());
         entry.setBodyWithVoice(entryDto.getBodyWithVoice());
-        entry.setCreatedDateAndTime(LocalDateTime.now().toString());
-        entry.setUpdatedDateAndTime(LocalDateTime.now().toString());
+        entry.setCreatedDate(formattedDate);
+        entry.setCreatedTime(formattedTime);
+        entry.setUpdatedDate(formattedDate);
+        entry.setUpdatedTime(formattedTime);
         entry.setCreatedBy(foundUser.getUsername());
 
         entryRepository.save(entry);
@@ -71,7 +80,8 @@ public class EntryServiceImpl implements EntryService{
         Entry foundEntry = findEntryById(entryId);
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         modelMapper.map(entryDto, foundEntry);
-        foundEntry.setUpdatedDateAndTime(LocalDateTime.now().toString());
+        foundEntry.setUpdatedDate(formattedDate);
+        foundEntry.setUpdatedTime(formattedTime);
         entryRepository.save(foundEntry);
         return foundEntry;
     }
@@ -105,7 +115,7 @@ public class EntryServiceImpl implements EntryService{
         String dateInString = formattedDate.toString();
         List <Entry> foundEntries = new ArrayList<>();
         for ( Entry entry: getAllEntries()) {
-            if(entry.getCreatedDateAndTime().equals(dateInString))
+            if(entry.getCreatedDate().equals(dateInString))
                 foundEntries.add(entry);
         }
         return foundEntries;
