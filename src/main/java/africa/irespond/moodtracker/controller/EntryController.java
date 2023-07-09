@@ -1,8 +1,9 @@
 package africa.irespond.moodtracker.controller;
 
-import africa.irespond.moodtracker.dto.UserDto;
-import africa.irespond.moodtracker.service.UserService;
+import africa.irespond.moodtracker.dto.EntryDto;
+import africa.irespond.moodtracker.service.EntryServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,16 +12,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/v1")
-public class UserController {
+public class EntryController {
     @Autowired
-    private UserService userService;
+    private EntryServiceImpl entryService;
 
-    @PostMapping("/user")
-    public ResponseEntity<?> registerUser(@RequestBody UserDto userDto) {
-        try {
-            return ResponseEntity.ok(userService.register(userDto));
-        } catch (IllegalStateException e) {
+    @PostMapping("/create-entry")
+    public ResponseEntity<?> createEntry(@RequestBody EntryDto entryDto){
+        try{
+            return ResponseEntity.ok(entryService.createEntry(entryDto));
+        } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+
 }

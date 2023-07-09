@@ -49,7 +49,7 @@ public class EntryServiceImpl implements EntryService{
         }
         String modifiedTitle = sb.toString().trim();
 
-       User foundUser = userService.findUserByUsername(entryDto.getUsername());
+      User foundUser = userService.findUserByUsername(entryDto.getUsername());
         Entry entry = new Entry();
         entry.setTitle(modifiedTitle);
         entry.getCategories().add(entryDto.getCategory());
