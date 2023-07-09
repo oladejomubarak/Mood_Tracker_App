@@ -90,6 +90,8 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
         MoodTracker foundTracker = findMood(moodTrackerId);
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         modelMapper.map(moodDto, foundTracker);
+        foundTracker.setDateTimeUpdated(LocalDateTime.now().toString());
+        trackerRepository.save(foundTracker);
 
         return foundTracker;
     }
