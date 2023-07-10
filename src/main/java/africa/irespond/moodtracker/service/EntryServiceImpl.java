@@ -2,8 +2,7 @@ package africa.irespond.moodtracker.service;
 
 import africa.irespond.moodtracker.dto.EntryDto;
 import africa.irespond.moodtracker.model.Entry;
-import africa.irespond.moodtracker.model.MoodTracker;
-import africa.irespond.moodtracker.model.User;
+import africa.irespond.moodtracker.model.AppUser;
 import africa.irespond.moodtracker.repository.EntryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -49,7 +48,7 @@ public class EntryServiceImpl implements EntryService{
         }
         String modifiedTitle = sb.toString().trim();
 
-      User foundUser = userService.findUserByUsername(entryDto.getUsername());
+      AppUser foundUser = userService.findUserByUsername(entryDto.getUsername());
         Entry entry = new Entry();
         entry.setTitle(modifiedTitle);
         entry.getCategories().add(entryDto.getCategory());

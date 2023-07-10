@@ -2,7 +2,7 @@ package africa.irespond.moodtracker.service;
 
 import africa.irespond.moodtracker.dto.MoodDto;
 import africa.irespond.moodtracker.model.MoodTracker;
-import africa.irespond.moodtracker.model.User;
+import africa.irespond.moodtracker.model.AppUser;
 
 import java.util.List;
 
@@ -13,10 +13,10 @@ public interface MoodTrackerService {
     MoodTracker editMoodTracker(Long moodTrackerId, MoodDto moodDto);
     void deleteMoodTracker(Long moodTrackerId);
 
-    List<User> calculateWeeklyMoodRate();
+    List<AppUser> calculateWeeklyMoodRate();
 
-    List<User> calculateMonthlyMoodRate();
-    List<User> calculateAnnualMoodRate();
+    List<AppUser> calculateMonthlyMoodRate();
+    List<AppUser> calculateAnnualMoodRate();
 
 
 

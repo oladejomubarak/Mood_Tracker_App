@@ -37,15 +37,16 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
 
     @Override
     public MoodTracker createMood(MoodDto moodDto) {
-        User foundUser = userService.findUserByUsername(moodDto.getOwner());
+        AppUser foundUser = userService.findUserByUsername(moodDto.getOwner());
         MoodTracker moodTracker = new MoodTracker();
-        moodTracker.setOwner(foundUser.getUsername());
+        //moodTracker.setOwner(foundUser.getUsername());
        moodTracker.setMood(moodDto.getMood());
        moodTracker.setComment(moodDto.getComment());
 //       moodTracker.setSocialMoodInfluence(moodDto.getSocialMoodInfluence());
 //       moodTracker.setWeatherMoodInfluence(moodDto.getWeatherMoodInfluence());
        moodTracker.setDateTimeCreated(LocalDateTime.now().toString());
        moodTracker.setDateTimeUpdated(LocalDateTime.now().toString());
+       moodTracker.setUser(foundUser);
         switch (moodTracker.getMood()) {
             case "SAD" -> moodTracker.setRatings(1.0);
             case "ANXIOUS" -> moodTracker.setRatings(2.0);
@@ -56,13 +57,14 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
         trackerRepository.save(moodTracker);
 
         DailyMoodTracker dailyMoodTracker = new DailyMoodTracker();
-        dailyMoodTracker.setOwner(foundUser.getUsername());
+        //dailyMoodTracker.setOwner(foundUser.getUsername());
         dailyMoodTracker.setMood(moodDto.getMood());
         dailyMoodTracker.setComment(moodDto.getComment());
 //        dailyMoodTracker.setSocialMoodInfluence(moodDto.getSocialMoodInfluence());
 //        dailyMoodTracker.setWeatherMoodInfluence(moodDto.getWeatherMoodInfluence());
         dailyMoodTracker.setDateTimeCreated(LocalDateTime.now().toString());
         dailyMoodTracker.setDateTimeUpdated(LocalDateTime.now().toString());
+        dailyMoodTracker.setUser(foundUser);
         switch (dailyMoodTracker.getMood()) {
             case "SAD" -> dailyMoodTracker.setRatings(1.0);
             case "ANXIOUS" -> dailyMoodTracker.setRatings(2.0);
@@ -104,40 +106,44 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
 
 
     @Override
-    public List<User> calculateWeeklyMoodRate() {
-        List<User> allUsers = userService.findAllUsers();
+    public List<AppUser> calculateWeeklyMoodRate() {
+        List<AppUser> allUsers = userService.findAllUsers();
         List<Double> listOfRatings = new ArrayList<>();
-        for (User user: allUsers ) {
+        for (AppUser user: allUsers ) {
             user.getDailyMoodTrackers().forEach(tracker -> listOfRatings.add(tracker.getRatings()));
             double average = listOfRatings.stream()
                     .mapToDouble(Double::doubleValue)
                     .average()
                     .orElse(0.0);
             user.getDailyMoodTrackers().clear();
-            if(average > 0.0) {
+            userService.saveUser(user);
+            if(average > 0.0 && listOfRatings.size() > 0 ) {
                 WeeklyMoodTracker moodTracker = new WeeklyMoodTracker();
                 moodTracker.setRatings(average);
+                moodTracker.setUser(user);
                 weeklyMoodTrackerRepository.save(moodTracker);
                 user.getWeeklyMoodTrackers().add(moodTracker);
+                userService.saveUser(user);
             }
             if(average > 4.0 && average <= 5.0) {
-                user.setMoodTrackerMessage("Dear "+user.getUsername()+" , from the mood entries you recorded last week," +
+                user.setMoodTrackerMessage("Dear "+user.getUsername()+", from the mood entries you recorded last week," +
                         "it can be concluded that you had an excellent mood change");
             } else if (average > 3.0 && average <= 4.0) {
-                user.setMoodTrackerMessage("Dear "+user.getUsername()+" , from the mood entries you recorded last week," +
+                user.setMoodTrackerMessage("Dear "+user.getUsername()+", from the mood entries you recorded last week," +
                         "it can be concluded that you had a very good mood change");
             } else if (average > 2.0 && average <= 3.0 ) {
-                user.setMoodTrackerMessage("Dear "+user.getUsername()+" , from the mood entries you recorded last week," +
+                user.setMoodTrackerMessage("Dear "+user.getUsername()+", from the mood entries you recorded last week," +
                         "it can be concluded that you had a good mood change");
             } else if (average > 1.0 && average <= 2.0) {
-                user.setMoodTrackerMessage("Dear "+user.getUsername()+" , from the mood entries you recorded last week," +
+                user.setMoodTrackerMessage("Dear "+user.getUsername()+", from the mood entries you recorded last week," +
                         "it can be concluded that you had a fair mood change");
             } else if (average > 0.0 && average <= 1.0){
-                user.setMoodTrackerMessage("Dear "+user.getUsername()+" , from the mood entries you recorded last week," +
+                user.setMoodTrackerMessage("Dear "+user.getUsername()+", from the mood entries you recorded last week," +
                         "it can be concluded that you had a poor mood change");
             } else {
-                user.setMoodTrackerMessage("No mood was available to track last week");
+                user.setMoodTrackerMessage("Dear "+user.getUsername()+", No mood was available to track last week");
             }
+            userService.saveUser(user);
             System.out.println(user.getMoodTrackerMessage());
         }
 
@@ -170,80 +176,88 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
     }
 
     @Override
-    public List<User> calculateMonthlyMoodRate() {
-        List<User> allUsers = userService.findAllUsers();
+    public List<AppUser> calculateMonthlyMoodRate() {
+        List<AppUser> allUsers = userService.findAllUsers();
         List<Double> listOfRatings = new ArrayList<>();
-        for (User user: allUsers ) {
+        for (AppUser user: allUsers ) {
             user.getWeeklyMoodTrackers().forEach(tracker -> listOfRatings.add(tracker.getRatings()));
             double average = listOfRatings.stream()
                     .mapToDouble(Double::doubleValue)
                     .average()
                     .orElse(0.0);
             user.getWeeklyMoodTrackers().clear();
-            if(average > 0.0) {
+            userService.saveUser(user);
+            if(average > 0.0 && listOfRatings.size() > 0) {
                 MonthlyMoodTracker moodTracker = new MonthlyMoodTracker();
                 moodTracker.setRatings(average);
+                moodTracker.setUser(user);
                 monthlyMoodTrackerRepository.save(moodTracker);
                 user.getMonthlyMoodTrackers().add(moodTracker);
+                userService.saveUser(user);
             }
             if(average > 4.0 && average <= 5.0) {
-                user.setMoodTrackerMessage("Dear "+user.getUsername()+" , from the mood entries you recorded last month," +
+                user.setMoodTrackerMessage("Dear "+user.getUsername()+", from the mood entries you recorded last month," +
                         "it can be concluded that you had an excellent mood change");
             } else if (average > 3.0 && average <= 4.0) {
-                user.setMoodTrackerMessage("Dear "+user.getUsername()+" , from the mood entries you recorded last month," +
+                user.setMoodTrackerMessage("Dear "+user.getUsername()+", from the mood entries you recorded last month," +
                         "it can be concluded that you had a very good mood change");
             } else if (average > 2.0 && average <= 3.0 ) {
-                user.setMoodTrackerMessage("Dear "+user.getUsername()+" , from the mood entries you recorded last month," +
+                user.setMoodTrackerMessage("Dear "+user.getUsername()+", from the mood entries you recorded last month," +
                         "it can be concluded that you had a good mood change");
             } else if (average > 1.0 && average <= 2.0) {
-                user.setMoodTrackerMessage("Dear "+user.getUsername()+" , from the mood entries you recorded last month," +
+                user.setMoodTrackerMessage("Dear "+user.getUsername()+", from the mood entries you recorded last month," +
                         "it can be concluded that you had a fair mood change");
             } else if (average > 0.0 && average <= 1.0){
-                user.setMoodTrackerMessage("Dear "+user.getUsername()+" , from the mood entries you recorded last month," +
+                user.setMoodTrackerMessage("Dear "+user.getUsername()+", from the mood entries you recorded last month," +
                         "it can be concluded that you had a poor mood change");
             } else {
                 user.setMoodTrackerMessage("No mood was available to track last month");
             }
+            userService.saveUser(user);
             System.out.println(user.getMoodTrackerMessage());
         }
         return allUsers;
     }
 
     @Override
-    public List<User> calculateAnnualMoodRate() {
-        List<User> allUsers = userService.findAllUsers();
+    public List<AppUser> calculateAnnualMoodRate() {
+        List<AppUser> allUsers = userService.findAllUsers();
         List<Double> listOfRatings = new ArrayList<>();
-        for (User user : allUsers) {
+        for (AppUser user : allUsers) {
             user.getMonthlyMoodTrackers().forEach(tracker -> listOfRatings.add(tracker.getRatings()));
             double average = listOfRatings.stream()
                     .mapToDouble(Double::doubleValue)
                     .average()
                     .orElse(0.0);
             user.getMonthlyMoodTrackers().clear();
-            if (average > 0.0) {
+            userService.saveUser(user);
+            if (average > 0.0 && listOfRatings.size() > 0) {
                 AnnualMoodTracker moodTracker = new AnnualMoodTracker();
                 moodTracker.setRatings(average);
+                moodTracker.setUser(user);
                 annualMoodTrackerRepository.save(moodTracker);
                 user.getAnnualMoodTrackers().add(moodTracker);
+                userService.saveUser(user);
             }
             if (average > 4.0 && average <= 5.0) {
-                user.setMoodTrackerMessage("Dear " + user.getUsername() + " , from the mood entries you recorded throughout last year," +
+                user.setMoodTrackerMessage("Dear " + user.getUsername() + ", from the mood entries you recorded throughout last year," +
                         "it can be concluded that you had an excellent mood change");
             } else if (average > 3.0 && average <= 4.0) {
-                user.setMoodTrackerMessage("Dear " + user.getUsername() + " , from the mood entries you recorded throughout last year," +
+                user.setMoodTrackerMessage("Dear " + user.getUsername() + ", from the mood entries you recorded throughout last year," +
                         "it can be concluded that you had a very good mood change");
             } else if (average > 2.0 && average <= 3.0) {
-                user.setMoodTrackerMessage("Dear " + user.getUsername() + " , from the mood entries you recorded throughout last year," +
+                user.setMoodTrackerMessage("Dear " + user.getUsername() + ", from the mood entries you recorded throughout last year," +
                         "it can be concluded that you had a good mood change");
             } else if (average > 1.0 && average <= 2.0) {
-                user.setMoodTrackerMessage("Dear " + user.getUsername() + " , from the mood entries you recorded throughout last year," +
+                user.setMoodTrackerMessage("Dear " + user.getUsername() + ", from the mood entries you recorded throughout last year," +
                         "it can be concluded that you had a fair mood change");
             } else if (average > 0.0 && average <= 1.0) {
-                user.setMoodTrackerMessage("Dear " + user.getUsername() + " , from the mood entries you recorded throughout last year," +
+                user.setMoodTrackerMessage("Dear " + user.getUsername() + ", from the mood entries you recorded throughout last year," +
                         "it can be concluded that you had a poor mood change");
             } else {
                 user.setMoodTrackerMessage("No mood was available to track last month");
             }
+            userService.saveUser(user);
             System.out.println(user.getMoodTrackerMessage());
         }
         return allUsers;
