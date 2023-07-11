@@ -23,7 +23,7 @@ public class Entry {
     //private String createdBy;
     @ElementCollection
     private Set<String> categories = new HashSet<>();
-    @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
-    private AppUser user;
+//    @ManyToOne
+//    @JoinColumn(name = "owner_id", referencedColumnName = "id")
+//    private AppUser user;
 }

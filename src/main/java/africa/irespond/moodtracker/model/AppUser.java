@@ -34,9 +34,9 @@ public class AppUser {
     @ToString.Exclude
     private List<AnnualMoodTracker> annualMoodTrackers = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
-    private List<Entry> entries = new ArrayList<>();
+//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+//    @ToString.Exclude
+//    private List<Entry> entries = new ArrayList<>();
 
     private String moodTrackerMessage;
 }

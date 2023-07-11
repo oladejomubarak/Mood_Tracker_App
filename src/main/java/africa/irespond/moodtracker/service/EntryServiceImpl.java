@@ -47,6 +47,7 @@ public class EntryServiceImpl implements EntryService{
             sb.append(capitalizedWord).append(" ");
         }
         String modifiedTitle = sb.toString().trim();
+       // String modifiedTitle = entryDto.getTitle();
 
       AppUser foundUser = userService.findUserByUsername(entryDto.getUsername());
         Entry entry = new Entry();
@@ -58,11 +59,12 @@ public class EntryServiceImpl implements EntryService{
         entry.setCreatedTime(formattedTime);
         entry.setUpdatedDate(formattedDate);
         entry.setUpdatedTime(formattedTime);
-        entry.setCreatedBy(foundUser.getUsername());
+        //entry.setUser(foundUser);
+        //entry.setCreatedBy(foundUser.getUsername());
 
         entryRepository.save(entry);
 
-        foundUser.getEntries().add(entry);
+        //foundUser.getEntries().add(entry);
 
         userService.saveUser(foundUser);
         return entry;

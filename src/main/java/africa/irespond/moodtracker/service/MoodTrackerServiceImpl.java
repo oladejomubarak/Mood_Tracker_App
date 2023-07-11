@@ -39,11 +39,8 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
     public MoodTracker createMood(MoodDto moodDto) {
         AppUser foundUser = userService.findUserByUsername(moodDto.getOwner());
         MoodTracker moodTracker = new MoodTracker();
-        //moodTracker.setOwner(foundUser.getUsername());
        moodTracker.setMood(moodDto.getMood());
        moodTracker.setComment(moodDto.getComment());
-//       moodTracker.setSocialMoodInfluence(moodDto.getSocialMoodInfluence());
-//       moodTracker.setWeatherMoodInfluence(moodDto.getWeatherMoodInfluence());
        moodTracker.setDateTimeCreated(LocalDateTime.now().toString());
        moodTracker.setDateTimeUpdated(LocalDateTime.now().toString());
        moodTracker.setUser(foundUser);
@@ -57,11 +54,8 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
         trackerRepository.save(moodTracker);
 
         DailyMoodTracker dailyMoodTracker = new DailyMoodTracker();
-        //dailyMoodTracker.setOwner(foundUser.getUsername());
         dailyMoodTracker.setMood(moodDto.getMood());
         dailyMoodTracker.setComment(moodDto.getComment());
-//        dailyMoodTracker.setSocialMoodInfluence(moodDto.getSocialMoodInfluence());
-//        dailyMoodTracker.setWeatherMoodInfluence(moodDto.getWeatherMoodInfluence());
         dailyMoodTracker.setDateTimeCreated(LocalDateTime.now().toString());
         dailyMoodTracker.setDateTimeUpdated(LocalDateTime.now().toString());
         dailyMoodTracker.setUser(foundUser);

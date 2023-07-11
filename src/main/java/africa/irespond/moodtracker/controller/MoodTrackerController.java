@@ -1,6 +1,7 @@
 package africa.irespond.moodtracker.controller;
 
 import africa.irespond.moodtracker.dto.MoodDto;
+import africa.irespond.moodtracker.model.MoodTracker;
 import africa.irespond.moodtracker.service.MoodTrackerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,10 +15,14 @@ public class MoodTrackerController {
     private MoodTrackerServiceImpl moodTrackerService;
     @PostMapping("/create-mood")
     public ResponseEntity<?> createMoodTracker(@RequestBody MoodDto moodDto){
-        return new ResponseEntity<>(moodTrackerService.createMood(moodDto), HttpStatus.OK);
+        try{
+            return new ResponseEntity<>(moodTrackerService.createMood(moodDto), HttpStatus.CREATED);
+        } catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     @GetMapping("/find-mood/{moodTrackerId}")
-    public ResponseEntity<?> getMood(@PathVariable("moodTrackerId") Long moodTrackerId){
+    public ResponseEntity<?> getMood(@PathVariable Long moodTrackerId){
         return ResponseEntity.ok(moodTrackerService.findMood(moodTrackerId));
     }
     @PatchMapping("/edit-mood{moodId}")
