@@ -15,22 +15,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 public class RunMoodRating {
     @Autowired
     private MoodTrackerServiceImpl moodTrackerService;
-   @Scheduled(cron = "0 */3 * * * *") // Runs every 3 minutes for testing
-    //@Scheduled(cron = "0 */3 * * * *") // Runs weekly
-    public void runWeeklyRatingSchedule(){
-       moodTrackerService.calculateWeeklyMoodRate();
-        System.out.println("weekly rating scheduler ran");
-    }
-    @Scheduled(cron = "0 */20 * * * *") // Runs every 20 minutes for testing
+
+    @Scheduled(cron = "0 */5 * * * *") // Runs every 5 minutes for testing
    //@Scheduled(cron = "0 0 0 1 * *") // Runs monthly
     public void runMonthlyRatingSchedule(){
-      moodTrackerService.calculateMonthlyMoodRate();
+      moodTrackerService.summarizeMoodRating();
         System.out.println("monthly rating scheduler ran");
-    }
-     @Scheduled(cron = "0 0 */1 * * *") // Runs every hour for testing
-    //@Scheduled(cron = "0 0 0 1 1 *") // Runs annually
-    public void runAnnualRatingSchedule(){
-       moodTrackerService.calculateAnnualMoodRate();
-        System.out.println("annual rating scheduler ran");
     }
 }

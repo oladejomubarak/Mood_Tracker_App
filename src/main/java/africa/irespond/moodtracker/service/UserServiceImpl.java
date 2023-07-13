@@ -2,6 +2,7 @@ package africa.irespond.moodtracker.service;
 
 import africa.irespond.moodtracker.dto.UserDto;
 import africa.irespond.moodtracker.model.AppUser;
+import africa.irespond.moodtracker.model.MoodTracker;
 import africa.irespond.moodtracker.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void saveUser(AppUser user) {
-       userRepository.save(user);
+        userRepository.save(user);
     }
 
     @Override
@@ -45,4 +46,6 @@ public class UserServiceImpl implements UserService{
     public List<AppUser> findAllUsers() {
         return userRepository.findAll();
     }
+
+
 }

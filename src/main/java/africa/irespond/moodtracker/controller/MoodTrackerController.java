@@ -34,4 +34,8 @@ public class MoodTrackerController {
         moodTrackerService.deleteMoodTracker(moodTrackerId);
         return ResponseEntity.ok("mood tracker deleted");
     }
+    @GetMapping("trackers-by-username/{username}")
+    public ResponseEntity<?> findTrackersByUsername(@PathVariable String username){
+        return ResponseEntity.ok(moodTrackerService.findUserMoodTrackers(username));
+    }
 }

@@ -17,7 +17,7 @@ public class MoodTracker {
     @Column(length = 5000)
     private String comment;
     private double ratings;
-    //private String owner;
+    private String owner;
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private AppUser user;

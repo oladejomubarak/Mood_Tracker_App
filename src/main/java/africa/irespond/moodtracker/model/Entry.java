@@ -20,7 +20,7 @@ public class Entry {
     private String createdTime;
     private String updatedDate;
     private String updatedTime;
-    //private String createdBy;
+    private String createdBy;
     @ElementCollection
     private Set<String> categories = new HashSet<>();
     @ManyToOne

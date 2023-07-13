@@ -37,19 +37,11 @@ public class EntryServiceImpl implements EntryService{
 
     @Override
     public Entry createEntry(EntryDto entryDto) {
-        String[] words = entryDto.getTitle().split(" ");
-
-        StringBuilder sb = new StringBuilder();
-        for (String word : words) {
-            String firstLetter = word.substring(0, 1).toUpperCase();
-            String restOfWord = word.substring(1);
-            String capitalizedWord = firstLetter + restOfWord;
-            sb.append(capitalizedWord).append(" ");
-        }
-        String modifiedTitle = sb.toString().trim();
-       // String modifiedTitle = entryDto.getTitle();
+        String modifiedTitle = getTitleFormat(entryDto);
 
       AppUser foundUser = userService.findUserByUsername(entryDto.getUsername());
+
+
         Entry entry = new Entry();
         entry.setTitle(modifiedTitle);
         entry.getCategories().add(entryDto.getCategory());
@@ -59,15 +51,24 @@ public class EntryServiceImpl implements EntryService{
         entry.setCreatedTime(formattedTime);
         entry.setUpdatedDate(formattedDate);
         entry.setUpdatedTime(formattedTime);
-        //entry.setUser(foundUser);
-        //entry.setCreatedBy(foundUser.getUsername());
-
-        entryRepository.save(entry);
-
-        //foundUser.getEntries().add(entry);
-
+        entry.setCreatedBy(foundUser.getUsername());
+        Entry savedEntry = entryRepository.save(entry);
+        foundUser.getEntries().add(savedEntry);
         userService.saveUser(foundUser);
-        return entry;
+        return savedEntry;
+    }
+
+    private String getTitleFormat(EntryDto entryDto) {
+        String[] words = entryDto.getTitle().split(" ");
+
+        StringBuilder sb = new StringBuilder();
+        for (String word : words) {
+            String firstLetter = word.substring(0, 1).toUpperCase();
+            String restOfWord = word.substring(1);
+            String capitalizedWord = firstLetter + restOfWord;
+            sb.append(capitalizedWord).append(" ");
+        }
+        return sb.toString().trim();
     }
 
     @Override

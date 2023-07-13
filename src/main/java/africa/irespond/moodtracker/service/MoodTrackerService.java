@@ -13,10 +13,8 @@ public interface MoodTrackerService {
     MoodTracker editMoodTracker(Long moodTrackerId, MoodDto moodDto);
     void deleteMoodTracker(Long moodTrackerId);
 
-    List<AppUser> calculateWeeklyMoodRate();
-
-    List<AppUser> calculateMonthlyMoodRate();
-    List<AppUser> calculateAnnualMoodRate();
+    List<MoodTracker>findUserMoodTrackers(String username);
+    void summarizeMoodRating();
 
 
 
