@@ -17,7 +17,7 @@ public interface MoodTrackerService {
     List<MoodTracker>findUserMoodTrackers(String username);
     void summarizeMoodRating();
 
-    MoodGraph plotMoodGraph();
+    void plotMoodGraph();
 
 
 

@@ -130,12 +130,14 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
     }
 
     @Override
-    public MoodGraph plotMoodGraph() {
+    public void plotMoodGraph() {
         AtomicInteger dayCounter = new AtomicInteger(1);
         List<AppUser> allUsers = userService.findAllUsers();
        MoodGraph moodGraph = new MoodGraph();
         for (AppUser user: allUsers) {
             List<Double> listOfRatings = user.getMoodRatings();
+            listOfRatings.clear();
+            userService.saveUser(user);
             user.getMoodTrackers().forEach(tracker -> listOfRatings.add(tracker.getRatings()));
             listOfRatings.forEach(rating ->{
                 if(rating == 5.0){
@@ -158,8 +160,7 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
                user.getMoodGraphs().add(moodGraph);
                userService.saveUser(user);
             });
-            listOfRatings.clear();
         }
-        return moodGraph;
+        //return moodGraph;
     }
 }
