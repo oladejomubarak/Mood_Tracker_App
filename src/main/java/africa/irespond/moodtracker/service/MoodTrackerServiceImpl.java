@@ -137,6 +137,7 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
         for (AppUser user: allUsers) {
             List<Double> listOfRatings = user.getMoodRatings();
             listOfRatings.clear();
+            user.getMoodGraphs().clear();
             userService.saveUser(user);
             user.getMoodTrackers().forEach(tracker -> listOfRatings.add(tracker.getRatings()));
             listOfRatings.forEach(rating ->{
