@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Slf4j
@@ -19,6 +19,8 @@ import java.util.List;
 public class MoodTrackerServiceImpl implements MoodTrackerService{
     @Autowired
     private TrackerRepository trackerRepository;
+    @Autowired
+    private MoodGraphRepository moodGraphRepository;
 
 
     @Autowired
@@ -104,26 +106,60 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
 //                userService.saveUser(user);
 //            }
             if(average > 4.0 && average <= 5.0) {
-                user.setMoodTrackerMessage("Dear "+user.getUsername()+", from the mood entries you recorded last week," +
+                user.setMoodTrackerMessage("Dear "+user.getUsername()+", from the mood entries you recorded last month," +
                         "it can be concluded that you had an excellent mood change");
             } else if (average > 3.0 && average <= 4.0) {
-                user.setMoodTrackerMessage("Dear "+user.getUsername()+", from the mood entries you recorded last week," +
+                user.setMoodTrackerMessage("Dear "+user.getUsername()+", from the mood entries you recorded last month," +
                         "it can be concluded that you had a very good mood change");
             } else if (average > 2.0 && average <= 3.0 ) {
-                user.setMoodTrackerMessage("Dear "+user.getUsername()+", from the mood entries you recorded last week," +
+                user.setMoodTrackerMessage("Dear "+user.getUsername()+", from the mood entries you recorded last month," +
                         "it can be concluded that you had a good mood change");
             } else if (average > 1.0 && average <= 2.0) {
-                user.setMoodTrackerMessage("Dear "+user.getUsername()+", from the mood entries you recorded last week," +
+                user.setMoodTrackerMessage("Dear "+user.getUsername()+", from the mood entries you recorded last month," +
                         "it can be concluded that you had a fair mood change");
             } else if (average > 0.0 && average <= 1.0){
-                user.setMoodTrackerMessage("Dear "+user.getUsername()+", from the mood entries you recorded last week," +
+                user.setMoodTrackerMessage("Dear "+user.getUsername()+", from the mood entries you recorded last month," +
                         "it can be concluded that you had a poor mood change");
             } else {
-                user.setMoodTrackerMessage("Dear "+user.getUsername()+", No mood was available to track last week");
+                user.setMoodTrackerMessage("Dear "+user.getUsername()+", No mood was available to track last month");
             }
             userService.saveUser(user);
             System.out.println(user.getMoodTrackerMessage());
         }
 
+    }
+
+    @Override
+    public MoodGraph plotMoodGraph() {
+        AtomicInteger dayCounter = new AtomicInteger(1);
+        List<AppUser> allUsers = userService.findAllUsers();
+       MoodGraph moodGraph = new MoodGraph();
+        for (AppUser user: allUsers) {
+            List<Double> listOfRatings = user.getMoodRatings();
+            user.getMoodTrackers().forEach(tracker -> listOfRatings.add(tracker.getRatings()));
+            listOfRatings.forEach(rating ->{
+                if(rating == 5.0){
+                    moodGraph.setRate(100);
+                } else if (rating == 4.0) {
+                    moodGraph.setRate(80);
+                } else if (rating == 3.0) {
+                    moodGraph.setRate(60);
+                } else if (rating == 2.0) {
+                    moodGraph.setRate(40);
+                } else if(rating == 1.0){
+                    moodGraph.setRate(20);
+                } else {
+                    moodGraph.setRate(0);
+                }
+                moodGraph.setDayOfTheMonth(dayCounter.get());
+                dayCounter.getAndIncrement();
+                moodGraph.setOwnedBy(user.getUsername());
+               moodGraphRepository.save(moodGraph);
+               user.getMoodGraphs().add(moodGraph);
+               userService.saveUser(user);
+            });
+            listOfRatings.clear();
+        }
+        return moodGraph;
     }
 }

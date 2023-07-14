@@ -1,6 +1,7 @@
 package africa.irespond.moodtracker.service;
 
 import africa.irespond.moodtracker.dto.MoodDto;
+import africa.irespond.moodtracker.model.MoodGraph;
 import africa.irespond.moodtracker.model.MoodTracker;
 import africa.irespond.moodtracker.model.AppUser;
 
@@ -15,6 +16,8 @@ public interface MoodTrackerService {
 
     List<MoodTracker>findUserMoodTrackers(String username);
     void summarizeMoodRating();
+
+    MoodGraph plotMoodGraph();
 
 
 
