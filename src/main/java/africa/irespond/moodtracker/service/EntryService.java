@@ -6,14 +6,15 @@ import africa.irespond.moodtracker.model.JournalEntry;
 import java.util.List;
 
 public interface EntryService {
-    JournalEntry createEntry(EntryDto entryDto);
-    JournalEntry findEntryById(Long entryId);
-    JournalEntry updateEntry(Long id, EntryDto entryDto);
-    void deleteEntry(Long id);
+    JournalEntry createJournalEntry(EntryDto entryDto);
+    JournalEntry createJournalEntryTwo(EntryDto entryDto);
+    JournalEntry findJournalEntryById(Long entryId);
+    JournalEntry updateJournalEntry(Long id, EntryDto entryDto);
+    void deleteJournalEntry(Long id);
 
-    List<JournalEntry> getAllEntries();
+    List<JournalEntry> getAllJournalEntries();
 
-    List<JournalEntry> findEntryByKeyword(String keyword);
-    List <JournalEntry> findEntryByDateCreated(String createdDate);
-    List <JournalEntry> findEntryByTitle(String entryTitle);
+    List<JournalEntry> findJournalEntryByKeyword(String keyword);
+    List <JournalEntry> findJournalEntryByDateCreated(String createdDate);
+    List <JournalEntry> findJournalEntryByTitle(String entryTitle);
 }

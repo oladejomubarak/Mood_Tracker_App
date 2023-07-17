@@ -6,9 +6,8 @@ import lombok.Data;
 @Data
 public class EntryDto {
     private String title;
-    private String body;
-    private String bodyWithText;
-    private String bodyWithVoice;
+    private String text;
+    private String voiceUrl;
     private String category;
     @NotBlank
     private String username;

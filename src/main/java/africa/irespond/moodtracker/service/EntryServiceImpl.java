@@ -26,7 +26,7 @@ public class EntryServiceImpl implements EntryService{
     private EntryRepository entryRepository;
     @Autowired
     private ModelMapper modelMapper;
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    //private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private final String formattedDate = LocalDate.now().toString();
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
     private final String formattedTime = LocalTime.now().format(timeFormatter);
@@ -36,17 +36,15 @@ public class EntryServiceImpl implements EntryService{
 
 
     @Override
-    public JournalEntry createEntry(EntryDto entryDto) {
+    public JournalEntry createJournalEntry(EntryDto entryDto) {
         //String modifiedTitle = getTitleFormat(entryDto);
 
       AppUser foundUser = userService.findUserByUsername(entryDto.getUsername());
-
-
         JournalEntry entry = new JournalEntry();
         entry.setTitle(entryDto.getTitle());
         entry.getCategories().add(entryDto.getCategory());
-        entry.setText(entryDto.getBodyWithText());
-        entry.setVoiceUrl(entryDto.getBodyWithVoice());
+        entry.setText(entryDto.getText());
+        entry.setVoiceUrl(entryDto.getVoiceUrl());
         entry.setCreatedDate(formattedDate);
         entry.setCreatedTime(formattedTime);
         entry.setUpdatedDate(formattedDate);
@@ -57,6 +55,11 @@ public class EntryServiceImpl implements EntryService{
         foundUser.getEntries().add(savedEntry);
         userService.saveUser(foundUser);
         return savedEntry;
+    }
+
+    @Override
+    public JournalEntry createJournalEntryTwo(EntryDto entryDto) {
+        return null;
     }
 
     private void generateTitle(AppUser foundUser, JournalEntry savedEntry) {
@@ -85,14 +88,14 @@ public class EntryServiceImpl implements EntryService{
     }
 
     @Override
-    public JournalEntry findEntryById(Long entryId) {
+    public JournalEntry findJournalEntryById(Long entryId) {
 
         return entryRepository.findById(entryId).orElseThrow(()-> new IllegalStateException("entry not found"));
     }
 
     @Override
-    public JournalEntry updateEntry(Long entryId, EntryDto entryDto) {
-        JournalEntry foundEntry = findEntryById(entryId);
+    public JournalEntry updateJournalEntry(Long entryId, EntryDto entryDto) {
+        JournalEntry foundEntry = findJournalEntryById(entryId);
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         modelMapper.map(entryDto, foundEntry);
         foundEntry.setUpdatedDate(formattedDate);
@@ -102,19 +105,19 @@ public class EntryServiceImpl implements EntryService{
     }
 
     @Override
-    public void deleteEntry(Long id) {
+    public void deleteJournalEntry(Long id) {
     entryRepository.deleteById(id);
     }
     @Override
-    public List<JournalEntry> getAllEntries() {
+    public List<JournalEntry> getAllJournalEntries() {
         return entryRepository.findAll();
     }
 
     @Override
-    public List<JournalEntry> findEntryByKeyword(String keyword) {
+    public List<JournalEntry> findJournalEntryByKeyword(String keyword) {
         boolean isValidKeyword = keyword.length() > 3;
         List <JournalEntry> foundEntries = new ArrayList<>();
-        for (JournalEntry entry: getAllEntries()) {
+        for (JournalEntry entry: getAllJournalEntries()) {
             if(isValidKeyword && (entry.getTitle().contains(keyword) ||
                     entry.getText().contains(keyword) ||
                     entry.getVoiceUrl().contains(keyword)))
@@ -124,12 +127,12 @@ public class EntryServiceImpl implements EntryService{
     }
 
     @Override
-    public List<JournalEntry> findEntryByDateCreated(String createdDate) {
+    public List<JournalEntry> findJournalEntryByDateCreated(String createdDate) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         var formattedDate = LocalDate.parse(createdDate, dateTimeFormatter);
         String dateInString = formattedDate.toString();
         List <JournalEntry> foundEntries = new ArrayList<>();
-        for ( JournalEntry entry: getAllEntries()) {
+        for ( JournalEntry entry: getAllJournalEntries()) {
             if(entry.getCreatedDate().equals(dateInString))
                 foundEntries.add(entry);
         }
@@ -137,9 +140,9 @@ public class EntryServiceImpl implements EntryService{
     }
 
     @Override
-    public List<JournalEntry> findEntryByTitle(String entryTitle) {
+    public List<JournalEntry> findJournalEntryByTitle(String entryTitle) {
         List <JournalEntry>foundEntries = new ArrayList<>();
-        for (JournalEntry entry: getAllEntries()
+        for (JournalEntry entry: getAllJournalEntries()
         ) { if (entry.getTitle().equalsIgnoreCase(entryTitle)) foundEntries.add(entry);
 
         }

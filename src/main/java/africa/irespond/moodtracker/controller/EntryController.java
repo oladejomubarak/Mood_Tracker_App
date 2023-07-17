@@ -3,7 +3,6 @@ package africa.irespond.moodtracker.controller;
 import africa.irespond.moodtracker.dto.EntryDto;
 import africa.irespond.moodtracker.service.EntryServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +15,7 @@ public class EntryController {
     @PostMapping("/create-entry")
     public ResponseEntity<?> createEntry(@RequestBody EntryDto entryDto){
         try{
-            return ResponseEntity.ok(entryService.createEntry(entryDto));
+            return ResponseEntity.ok(entryService.createJournalEntry(entryDto));
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -24,7 +23,7 @@ public class EntryController {
     @GetMapping("/entry/{id}")
     public ResponseEntity<?> findEntry(@PathVariable Long id){
         try{
-            return ResponseEntity.ok(entryService.findEntryById(id));
+            return ResponseEntity.ok(entryService.findJournalEntryById(id));
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -33,26 +32,26 @@ public class EntryController {
     @PatchMapping("edit-entry/{id}")
     public ResponseEntity<?> editEntry(@PathVariable Long id, @RequestBody EntryDto entryDto){
         try{
-            return ResponseEntity.ok(entryService.updateEntry(id, entryDto));
+            return ResponseEntity.ok(entryService.updateJournalEntry(id, entryDto));
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     @DeleteMapping("delete/{id}")
     public ResponseEntity<?> deleteEntry(@PathVariable Long id){
-        entryService.deleteEntry(id);
+        entryService.deleteJournalEntry(id);
         return ResponseEntity.ok("entry deleted");
     }
     @GetMapping("entry-by-keyword")
     public ResponseEntity<?> findEntryByKeyword(@RequestParam String keyword){
-    return ResponseEntity.ok(entryService.findEntryByKeyword(keyword));
+    return ResponseEntity.ok(entryService.findJournalEntryByKeyword(keyword));
     }
     @GetMapping("entry-by-date")
     public ResponseEntity<?> findEntryByDate(@RequestParam String date){
-        return ResponseEntity.ok(entryService.findEntryByKeyword(date));
+        return ResponseEntity.ok(entryService.findJournalEntryByKeyword(date));
     }
     @GetMapping("entry-by-title")
     public ResponseEntity<?> findEntryByTitle(@RequestParam String title){
-        return ResponseEntity.ok(entryService.findEntryByKeyword(title));
+        return ResponseEntity.ok(entryService.findJournalEntryByKeyword(title));
     }
 }
