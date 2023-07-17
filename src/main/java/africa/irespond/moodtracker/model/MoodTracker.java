@@ -12,8 +12,6 @@ public class MoodTracker {
     private String dateTimeCreated;
     private String dateTimeUpdated;
     private String mood;
-//    private SocialMoodInfluence socialMoodInfluence;
-//    private WeatherMoodInfluence weatherMoodInfluence;
     @Column(length = 5000)
     private String comment;
     private double ratings;

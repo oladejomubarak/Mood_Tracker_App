@@ -15,6 +15,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -27,7 +28,7 @@ public class EntryServiceImpl implements EntryService{
     @Autowired
     private ModelMapper modelMapper;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-    private final String formattedDate = LocalDate.now().format(dateFormatter);
+    private final String formattedDate = LocalDate.now().toString();
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
     private final String formattedTime = LocalTime.now().format(timeFormatter);
 
@@ -37,13 +38,13 @@ public class EntryServiceImpl implements EntryService{
 
     @Override
     public Entry createEntry(EntryDto entryDto) {
-        String modifiedTitle = getTitleFormat(entryDto);
+        //String modifiedTitle = getTitleFormat(entryDto);
 
       AppUser foundUser = userService.findUserByUsername(entryDto.getUsername());
 
 
         Entry entry = new Entry();
-        entry.setTitle(modifiedTitle);
+        entry.setTitle(entryDto.getTitle());
         entry.getCategories().add(entryDto.getCategory());
         entry.setBodyWithText(entryDto.getBodyWithText());
         entry.setBodyWithVoice(entryDto.getBodyWithVoice());
@@ -53,9 +54,22 @@ public class EntryServiceImpl implements EntryService{
         entry.setUpdatedTime(formattedTime);
         entry.setCreatedBy(foundUser.getUsername());
         Entry savedEntry = entryRepository.save(entry);
+        generateTitle(foundUser, savedEntry);
         foundUser.getEntries().add(savedEntry);
         userService.saveUser(foundUser);
         return savedEntry;
+    }
+
+    private void generateTitle(AppUser foundUser, Entry savedEntry) {
+        if((Objects.equals(savedEntry.getTitle(), "") || savedEntry.getTitle() == null)
+                && savedEntry.getBodyWithText() != null ){
+             String[] words = savedEntry.getBodyWithText().split("\\s+");
+             String firstWord = words[0];
+             savedEntry.setTitle(firstWord);
+             entryRepository.save(savedEntry);
+            foundUser.getEntries().add(savedEntry);
+            userService.saveUser(foundUser);
+            }
     }
 
     private String getTitleFormat(EntryDto entryDto) {
@@ -113,7 +127,7 @@ public class EntryServiceImpl implements EntryService{
     @Override
     public List<Entry> findEntryByDateCreated(String createdDate) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        var formattedDate = LocalDateTime.parse(createdDate, dateTimeFormatter);
+        var formattedDate = LocalDate.parse(createdDate, dateTimeFormatter);
         String dateInString = formattedDate.toString();
         List <Entry> foundEntries = new ArrayList<>();
         for ( Entry entry: getAllEntries()) {

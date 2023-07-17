@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface EntryRepository extends JpaRepository<Entry, Long> {
     List<Entry> findEntryByTitleIgnoreCase(String title);
+
+    List<Entry> findEntryByCreatedDate(String createdDate);
 }
