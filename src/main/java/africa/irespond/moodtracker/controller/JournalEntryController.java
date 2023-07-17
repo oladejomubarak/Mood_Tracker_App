@@ -54,4 +54,8 @@ public class JournalEntryController {
     public ResponseEntity<?> findEntryByTitle(@RequestParam String title){
         return ResponseEntity.ok(entryService.findJournalEntryByTitle(title));
     }
+    @GetMapping("entry-by-category")
+    public ResponseEntity<?> findEntryByCategory(@RequestParam String category){
+        return ResponseEntity.ok(entryService.findJournalEntryByCategory(category));
+    }
 }
