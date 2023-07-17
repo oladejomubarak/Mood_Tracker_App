@@ -7,20 +7,19 @@ import java.util.HashSet;
 import java.util.Set;
 @Entity
 @Data
-public class Entry {
+public class JournalEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String title;
     @Column(length = 30000)
-    private String bodyWithText;
+    private String text;
     @Column(length = 30000)
-    private String bodyWithVoice;
-    private String createdDate;
+    private String voiceUrl;
+    private String createdOn;
     private String createdTime;
-    private String updatedDate;
-    private String updatedTime;
-    private String createdBy;
+    private String updatedOn;
+   // private String createdBy;
     @ElementCollection
     private Set<String> categories = new HashSet<>();
     @ManyToOne

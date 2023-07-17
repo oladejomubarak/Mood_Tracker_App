@@ -1,12 +1,14 @@
 package africa.irespond.moodtracker.repository;
 
-import africa.irespond.moodtracker.model.Entry;
+import africa.irespond.moodtracker.model.JournalEntry;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface EntryRepository extends JpaRepository<Entry, Long> {
-    List<Entry> findEntryByTitleIgnoreCase(String title);
+public interface EntryRepository extends JpaRepository<JournalEntry, Long> {
+    List<JournalEntry> findJournalEntriesByTitle(String title);
 
-    List<Entry> findEntryByCreatedDate(String createdDate);
+    List<JournalEntry> findJournalEntriesByCreatedOn (String createdDate);
+
+    List<JournalEntry> findJournalEntriesByCategoriesContainingIgnoreCase(String category);
 }

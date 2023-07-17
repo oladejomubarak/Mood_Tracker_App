@@ -20,7 +20,7 @@ public class AppUser {
     private List<MoodTracker> moodTrackers;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
     @ToString.Exclude
-    private List<Entry> entries;
+    private List<JournalEntry> entries;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
     @ToString.Exclude
     private List<MoodGraph> moodGraphs;
