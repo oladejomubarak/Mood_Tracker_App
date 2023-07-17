@@ -1,16 +1,16 @@
 package africa.irespond.moodtracker.controller;
 
 import africa.irespond.moodtracker.dto.EntryDto;
-import africa.irespond.moodtracker.service.EntryServiceImpl;
+import africa.irespond.moodtracker.service.JournalEntryServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1")
-public class EntryController {
+public class JournalEntryController {
     @Autowired
-    private EntryServiceImpl entryService;
+    private JournalEntryServiceImpl entryService;
 
     @PostMapping("/create-entry")
     public ResponseEntity<?> createEntry(@RequestBody EntryDto entryDto){
@@ -44,14 +44,14 @@ public class EntryController {
     }
     @GetMapping("entry-by-keyword")
     public ResponseEntity<?> findEntryByKeyword(@RequestParam String keyword){
-    return ResponseEntity.ok(entryService.findJournalEntryByKeyword(keyword));
+    return ResponseEntity.ok(entryService.findJournalEntryByTitleKeyword(keyword));
     }
     @GetMapping("entry-by-date")
     public ResponseEntity<?> findEntryByDate(@RequestParam String date){
-        return ResponseEntity.ok(entryService.findJournalEntryByKeyword(date));
+        return ResponseEntity.ok(entryService.findJournalEntryByDateCreated(date));
     }
     @GetMapping("entry-by-title")
     public ResponseEntity<?> findEntryByTitle(@RequestParam String title){
-        return ResponseEntity.ok(entryService.findJournalEntryByKeyword(title));
+        return ResponseEntity.ok(entryService.findJournalEntryByTitle(title));
     }
 }
