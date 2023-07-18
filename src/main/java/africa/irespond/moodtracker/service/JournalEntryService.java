@@ -19,4 +19,11 @@ public interface JournalEntryService {
     List <JournalEntry> findJournalEntryByTitle(String entryTitle);
 
     List<JournalEntry> findJournalEntryByCategory(String category);
+
+    List<JournalEntry> findJournalEntryByTitleKeywordForUser(String username,String keyword);
+    List <JournalEntry> findJournalEntryByDateCreatedForUser(String username, String createdDate);
+    List <JournalEntry> findJournalEntryByTitleForUser(String username,String entryTitle);
+
+    List<JournalEntry> findJournalEntryByCategoryForUser(String username,String category);
+    List<JournalEntry> findAllEntriesByUser(String username);
 }

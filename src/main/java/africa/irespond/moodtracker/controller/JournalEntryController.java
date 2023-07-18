@@ -43,6 +43,11 @@ public class JournalEntryController {
         entryService.deleteJournalEntry(id);
         return ResponseEntity.ok("entry deleted");
     }
+    @GetMapping("all-entries")
+    public ResponseEntity<?> getAllEntries(@RequestParam String keyword){
+        return ResponseEntity.ok(entryService.getAllJournalEntries());
+    }
+
     @GetMapping("entry-by-keyword")
     public ResponseEntity<?> findEntryByKeyword(@RequestParam String keyword){
     return ResponseEntity.ok(entryService.findJournalEntryByTitleKeyword(keyword));
@@ -58,5 +63,14 @@ public class JournalEntryController {
     @GetMapping("entry-by-category")
     public ResponseEntity<?> findEntryByCategory(@RequestParam String category){
         return ResponseEntity.ok(entryService.findJournalEntryByCategory(category));
+    }
+    @GetMapping("/entries-by-user")
+    public ResponseEntity<?> findAllEntriesForUser(@RequestParam String username){
+        try{
+            return ResponseEntity.ok(entryService.findAllEntriesByUser(username));
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 }

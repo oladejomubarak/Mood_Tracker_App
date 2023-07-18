@@ -29,10 +29,10 @@ public class JournalEntryServiceImpl implements JournalEntryService {
     private JournalEntryRepository entryRepository;
     @Autowired
     private ModelMapper modelMapper;
-    //private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-    private final String formattedDate = LocalDate.now().toString();
-    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-    private final String formattedTime = LocalTime.now().format(timeFormatter);
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private final String formattedDate = LocalDate.now().format(dateFormatter);
+//    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+//    private final String formattedTime = LocalTime.now().format(timeFormatter);
 
 
 
@@ -48,13 +48,15 @@ public class JournalEntryServiceImpl implements JournalEntryService {
 //        entry.getCategories().add(entryDto.getCategory());
         entry.setText(entryDto.getText());
         entry.setVoiceUrl(entryDto.getVoiceUrl());
-        entry.setCreatedOn(LocalDate.now().toString());
+        entry.setCreatedOn(formattedDate);
         entry.setCreatedTime(LocalTime.now().toString());
         entry.setUpdatedOn(formattedDate);
+        entry.setUser(foundUser);
         entryRepository.save(entry);
 
-        foundUser.getEntries().add(entry);
-        userService.saveUser(foundUser);
+//        foundUser.getEntries().add(entry);
+//        foundUser.setEntries(foundUser.getEntries());
+       // userService.saveUser(foundUser);
         return entry;
     }
 
@@ -80,8 +82,8 @@ public class JournalEntryServiceImpl implements JournalEntryService {
         entry.setText(entryDto.getText());
         entry.setTitle(entryDto.getTitle());
 
-        if(entryDto.getTitle().equals("") || entry.getTitle() == null
-                && !entryDto.getText().equals("") || entryDto.getText() != null) {
+        if((entryDto.getTitle().equals("") || entryDto.getTitle() == null)
+                && (!entryDto.getText().equals("") || entryDto.getText() != null)) {
             String[] words = entryDto.getText().split("\\s+");
             String firstWord = words[0];
             entry.setTitle(firstWord);
@@ -90,8 +92,9 @@ public class JournalEntryServiceImpl implements JournalEntryService {
 //        entry.getCategories().add(entryDto.getCategory());
         entry.setVoiceUrl(entryDto.getVoiceUrl());
         entry.setCreatedOn(formattedDate);
-        entry.setCreatedTime(formattedTime);
+        entry.setCreatedTime(LocalTime.now().toString());
         entry.setUpdatedOn(formattedDate);
+        entry.setUser(foundUser);
         JournalEntry savedEntry = entryRepository.save(entry);
 //        if((Objects.equals(savedEntry.getTitle(), "") || savedEntry.getTitle() == null)
 //                && savedEntry.getText() != null ){
@@ -102,8 +105,8 @@ public class JournalEntryServiceImpl implements JournalEntryService {
 //            foundUser.getEntries().add(savedEntry);
 //            userService.saveUser(foundUser);
 //            }
-        foundUser.getEntries().add(savedEntry);
-        userService.saveUser(foundUser);
+//        foundUser.getEntries().add(savedEntry);
+       // userService.saveUser(foundUser);
         return savedEntry;
     }
 
@@ -145,12 +148,28 @@ public class JournalEntryServiceImpl implements JournalEntryService {
     public List<JournalEntry> getAllJournalEntries() {
         return entryRepository.findAll();
     }
+    @Override
+    public List<JournalEntry> findAllEntriesByUser(String username) {
+        AppUser foundUser = userService.findUserByUsername(username);
+        return entryRepository.findJournalEntriesByUser(foundUser);
+    }
 
     @Override
     public List<JournalEntry> findJournalEntryByTitleKeyword(String keyword) {
         boolean isValidKeyword = keyword.length() > 3;
         List <JournalEntry> foundEntries = new ArrayList<>();
         for (JournalEntry entry: getAllJournalEntries()) {
+            if(isValidKeyword && entry.getTitle().contains(keyword)) {
+                foundEntries.add(entry);
+            }
+        }
+        return foundEntries;
+    }
+    @Override
+    public List<JournalEntry> findJournalEntryByTitleKeywordForUser(String username, String keyword) {
+        boolean isValidKeyword = keyword.length() > 3;
+        List <JournalEntry> foundEntries = new ArrayList<>();
+        for (JournalEntry entry: findAllEntriesByUser(username)) {
             if(isValidKeyword && entry.getTitle().contains(keyword)) {
                 foundEntries.add(entry);
             }
@@ -164,18 +183,47 @@ public class JournalEntryServiceImpl implements JournalEntryService {
     }
 
     @Override
-    public List<JournalEntry> findJournalEntryByTitle(String entryTitle) {
+    public List<JournalEntry> findJournalEntryByDateCreatedForUser(String username, String createdDate) {
+        List <JournalEntry> foundEntries = new ArrayList<>();
+        List <JournalEntry> userEntries = findAllEntriesByUser(username);
+        userEntries.forEach( entry -> {
+            if(entry.getCreatedOn().equals(createdDate)) foundEntries.add(entry);
+        });
+        return foundEntries;
+    }
 
+    @Override
+    public List<JournalEntry> findJournalEntryByTitle(String entryTitle) {
         return entryRepository.findJournalEntriesByTitleIgnoreCase(entryTitle);
+    }
+
+    @Override
+    public List<JournalEntry> findJournalEntryByTitleForUser(String username, String entryTitle) {
+        List <JournalEntry> foundEntries = new ArrayList<>();
+        List <JournalEntry> userEntries = findAllEntriesByUser(username);
+        userEntries.forEach( entry -> {
+            if(entry.getTitle().equalsIgnoreCase(entryTitle)) foundEntries.add(entry);
+        });
+        return foundEntries;
     }
 
     @Override
     public List<JournalEntry> findJournalEntryByCategory(String category) {
         List<JournalEntry> entryList = new ArrayList<>();
-    getAllJournalEntries().forEach(journalEntry -> {
+    getAllJournalEntries().forEach( journalEntry -> {
         if(journalEntry.getCategory().equalsIgnoreCase(category)) entryList.add(journalEntry);
     });
         return entryList;
+    }
+
+    @Override
+    public List<JournalEntry> findJournalEntryByCategoryForUser(String username, String category) {
+        List <JournalEntry> foundEntries = new ArrayList<>();
+        List <JournalEntry> userEntries = findAllEntriesByUser(username);
+        userEntries.forEach( entry -> {
+            if(entry.getCategory().equalsIgnoreCase(category)) foundEntries.add(entry);
+        });
+        return foundEntries;
     }
 
 }
