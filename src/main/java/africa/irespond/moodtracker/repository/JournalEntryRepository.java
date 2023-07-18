@@ -9,6 +9,4 @@ public interface JournalEntryRepository extends JpaRepository<JournalEntry, Long
     List<JournalEntry> findJournalEntriesByTitleIgnoreCase(String title);
 
     List<JournalEntry> findJournalEntriesByCreatedOn (String createdDate);
-
-    List<JournalEntry> findJournalEntriesByCategoriesContainingIgnoreCase(String category);
 }

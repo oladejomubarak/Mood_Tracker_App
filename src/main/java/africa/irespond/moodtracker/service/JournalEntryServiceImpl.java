@@ -15,7 +15,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Slf4j
@@ -60,7 +59,7 @@ public class JournalEntryServiceImpl implements JournalEntryService {
     }
 
     private void setEntryCategory(EntryDto entryDto, JournalEntry entry) {
-        entryCategoryService.findAllCategories().forEach(entryCategory -> {
+        entryCategoryService.findAllCategoryClasses().forEach(entryCategory -> {
             if(entryCategory.getName().equalsIgnoreCase(entryDto.getCategory())) {
                 entry.setCategory(entryCategory.getName());
             } else {

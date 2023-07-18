@@ -1,6 +1,7 @@
 package africa.irespond.moodtracker.controller;
 
 import africa.irespond.moodtracker.dto.EntryDto;
+import africa.irespond.moodtracker.service.JournalEntryService;
 import africa.irespond.moodtracker.service.JournalEntryServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1")
 public class JournalEntryController {
     @Autowired
-    private JournalEntryServiceImpl entryService;
+    private JournalEntryService entryService;
 
     @PostMapping("/create-entry")
     public ResponseEntity<?> createEntry(@RequestBody EntryDto entryDto){
