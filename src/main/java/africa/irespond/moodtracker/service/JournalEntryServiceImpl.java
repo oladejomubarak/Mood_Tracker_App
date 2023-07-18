@@ -61,7 +61,7 @@ public class JournalEntryServiceImpl implements JournalEntryService {
 
     private void setEntryCategory(EntryDto entryDto, JournalEntry entry) {
         entryCategoryService.findAllCategories().forEach(entryCategory -> {
-            if(entryCategory.getName().equals(entryDto.getCategory())) {
+            if(entryCategory.getName().equalsIgnoreCase(entryDto.getCategory())) {
                 entry.setCategory(entryCategory.getName());
             } else {
                 EntryCategory entryCategory1 = new EntryCategory();
@@ -173,13 +173,10 @@ public class JournalEntryServiceImpl implements JournalEntryService {
     @Override
     public List<JournalEntry> findJournalEntryByCategory(String category) {
         List<JournalEntry> entryList = new ArrayList<>();
-        List<String> categoryList = new ArrayList<>();
-        entryCategoryService.findAllCategories().forEach(entryCategory -> {
-            categoryList.add(entryCategory.getName());
-        });
-
-
-        return entryRepository.findJournalEntriesByCategoriesContainingIgnoreCase(category);
+    getAllJournalEntries().forEach(journalEntry -> {
+        if(journalEntry.getCategory().equalsIgnoreCase(category)) entryList.add(journalEntry);
+    });
+        return entryList;
     }
 
 }
