@@ -37,7 +37,7 @@ public class JournalEntryController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("delete-entry/{id}")
     public ResponseEntity<?> deleteEntry(@PathVariable Long id){
         entryService.deleteJournalEntry(id);
         return ResponseEntity.ok("entry deleted");

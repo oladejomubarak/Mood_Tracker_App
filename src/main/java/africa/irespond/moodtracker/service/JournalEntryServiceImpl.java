@@ -1,6 +1,7 @@
 package africa.irespond.moodtracker.service;
 
 import africa.irespond.moodtracker.dto.EntryDto;
+import africa.irespond.moodtracker.model.EntryCategory;
 import africa.irespond.moodtracker.model.JournalEntry;
 import africa.irespond.moodtracker.model.AppUser;
 import africa.irespond.moodtracker.repository.JournalEntryRepository;
@@ -23,6 +24,9 @@ public class JournalEntryServiceImpl implements JournalEntryService {
     private UserService userService;
 
     @Autowired
+    private EntryCategoryService entryCategoryService;
+
+    @Autowired
     private JournalEntryRepository entryRepository;
     @Autowired
     private ModelMapper modelMapper;
@@ -37,22 +41,35 @@ public class JournalEntryServiceImpl implements JournalEntryService {
 
     @Override
     public JournalEntry createJournalEntry(EntryDto entryDto) {
-        //String modifiedTitle = getTitleFormat(entryDto);
 
-      AppUser foundUser = userService.findUserByUsername(entryDto.getUsername());
+        AppUser foundUser = userService.findUserByUsername(entryDto.getUsername());
         JournalEntry entry = new JournalEntry();
+        setEntryCategory(entryDto, entry);
         entry.setTitle(entryDto.getTitle());
-        entry.getCategories().add(entryDto.getCategory());
+//        entry.getCategories().add(entryDto.getCategory());
         entry.setText(entryDto.getText());
         entry.setVoiceUrl(entryDto.getVoiceUrl());
-        entry.setCreatedOn(formattedDate);
-        entry.setCreatedTime(formattedTime);
+        entry.setCreatedOn(LocalDate.now().toString());
+        entry.setCreatedTime(LocalTime.now().toString());
         entry.setUpdatedOn(formattedDate);
-        JournalEntry savedEntry = entryRepository.save(entry);
-        //generateTitle(foundUser, savedEntry);
-        foundUser.getEntries().add(savedEntry);
+        entryRepository.save(entry);
+
+        foundUser.getEntries().add(entry);
         userService.saveUser(foundUser);
-        return savedEntry;
+        return entry;
+    }
+
+    private void setEntryCategory(EntryDto entryDto, JournalEntry entry) {
+        entryCategoryService.findAllCategories().forEach(entryCategory -> {
+            if(entryCategory.getName().equals(entryDto.getCategory())) {
+                entry.setCategory(entryCategory.getName());
+            } else {
+                EntryCategory entryCategory1 = new EntryCategory();
+                entryCategory1.setName(entryDto.getCategory());
+                entryCategoryService.saveEntryCategory(entryCategory1);
+                entry.setCategory(entryCategory1.getName());
+            }
+        });
     }
 
     @Override
@@ -60,33 +77,38 @@ public class JournalEntryServiceImpl implements JournalEntryService {
 
         AppUser foundUser = userService.findUserByUsername(entryDto.getUsername());
         JournalEntry entry = new JournalEntry();
-        entry.setTitle(entryDto.getTitle());
-        entry.getCategories().add(entryDto.getCategory());
+        setEntryCategory(entryDto, entry);
         entry.setText(entryDto.getText());
+        entry.setTitle(entryDto.getTitle());
+
+        if(entryDto.getTitle().equals("") || entry.getTitle() == null
+                && !entryDto.getText().equals("") || entryDto.getText() != null) {
+            String[] words = entryDto.getText().split("\\s+");
+            String firstWord = words[0];
+            entry.setTitle(firstWord);
+        }
+
+//        entry.getCategories().add(entryDto.getCategory());
         entry.setVoiceUrl(entryDto.getVoiceUrl());
         entry.setCreatedOn(formattedDate);
         entry.setCreatedTime(formattedTime);
         entry.setUpdatedOn(formattedDate);
         JournalEntry savedEntry = entryRepository.save(entry);
-        generateTitle(foundUser, savedEntry);
+//        if((Objects.equals(savedEntry.getTitle(), "") || savedEntry.getTitle() == null)
+//                && savedEntry.getText() != null ){
+//             String[] words = savedEntry.getText().split("\\s+");
+//             String firstWord = words[0];
+//             savedEntry.setTitle(firstWord);
+//             entryRepository.save(savedEntry);
+//            foundUser.getEntries().add(savedEntry);
+//            userService.saveUser(foundUser);
+//            }
         foundUser.getEntries().add(savedEntry);
         userService.saveUser(foundUser);
         return savedEntry;
     }
 
-    private void generateTitle(AppUser foundUser, JournalEntry savedEntry) {
-        if((Objects.equals(savedEntry.getTitle(), "") || savedEntry.getTitle() == null)
-                && savedEntry.getText() != null ){
-             String[] words = savedEntry.getText().split("\\s+");
-             String firstWord = words[0];
-             savedEntry.setTitle(firstWord);
-             entryRepository.save(savedEntry);
-            foundUser.getEntries().add(savedEntry);
-            userService.saveUser(foundUser);
-            }
-    }
-
-//    private String getTitleFormat(EntryDto entryDto) {
+    //    private String getTitleFormat(EntryDto entryDto) {
 //        String[] words = entryDto.getTitle().split(" ");
 //
 //        StringBuilder sb = new StringBuilder();
@@ -111,6 +133,7 @@ public class JournalEntryServiceImpl implements JournalEntryService {
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         modelMapper.map(entryDto, foundEntry);
         foundEntry.setUpdatedOn(formattedDate);
+        setEntryCategory(entryDto, foundEntry);
         entryRepository.save(foundEntry);
         return foundEntry;
     }
@@ -149,6 +172,13 @@ public class JournalEntryServiceImpl implements JournalEntryService {
 
     @Override
     public List<JournalEntry> findJournalEntryByCategory(String category) {
+        List<JournalEntry> entryList = new ArrayList<>();
+        List<String> categoryList = new ArrayList<>();
+        entryCategoryService.findAllCategories().forEach(entryCategory -> {
+            categoryList.add(entryCategory.getName());
+        });
+
+
         return entryRepository.findJournalEntriesByCategoriesContainingIgnoreCase(category);
     }
 

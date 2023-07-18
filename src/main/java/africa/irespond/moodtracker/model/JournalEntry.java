@@ -14,14 +14,14 @@ public class JournalEntry {
     private String title;
     @Column(length = 30000)
     private String text;
-    @Column(length = 30000)
     private String voiceUrl;
     private String createdOn;
     private String createdTime;
     private String updatedOn;
    // private String createdBy;
-    @ElementCollection
-    private Set<String> categories = new HashSet<>();
+//    @ElementCollection
+//    private Set<String> categories = new HashSet<>();
+    private String category;
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private AppUser user;
