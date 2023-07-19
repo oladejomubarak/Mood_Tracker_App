@@ -23,6 +23,6 @@ public class JournalEntry {
 //    private Set<String> categories = new HashSet<>();
     private String category;
     @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
+    @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
     private AppUser user;
 }

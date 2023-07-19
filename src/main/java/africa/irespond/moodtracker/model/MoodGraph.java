@@ -15,6 +15,6 @@ public class MoodGraph {
     private int dayOfTheMonth;
     private String ownedBy;
     @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
+    @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
     private AppUser user;
 }

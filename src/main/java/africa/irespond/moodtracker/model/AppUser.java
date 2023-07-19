@@ -17,9 +17,9 @@ public class AppUser {
 
     private String username;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
-    @ToString.Exclude
-    private List<MoodTracker> moodTrackers;
+//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
+//    @ToString.Exclude
+//    private List<MoodTracker> moodTrackers;
 
 //    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
 //    @ToString.Exclude
@@ -33,19 +33,5 @@ public class AppUser {
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<Double> moodRatings = new ArrayList<>();
-
-//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
-//    @ToString.Exclude
-//    private List<DailyMoodTracker> dailyMoodTrackers;
-//    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
-//    @ToString.Exclude
-//    private List<WeeklyMoodTracker> weeklyMoodTrackers;
-//    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
-//    @ToString.Exclude
-//    private List<MonthlyMoodTracker> monthlyMoodTrackers;
-//
-//    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
-//    @ToString.Exclude
-//    private List<AnnualMoodTracker> annualMoodTrackers;
 
 }

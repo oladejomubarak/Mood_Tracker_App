@@ -9,7 +9,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -21,13 +24,13 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
     private TrackerRepository trackerRepository;
     @Autowired
     private MoodGraphRepository moodGraphRepository;
-
-
     @Autowired
     private UserServiceImpl userService;
-
-
+    @Autowired
     private final ModelMapper modelMapper;
+
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private final String formattedDate = LocalDate.now().format(dateFormatter);
 
 
     @Override
@@ -36,10 +39,10 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
         MoodTracker moodTracker = new MoodTracker();
        moodTracker.setMood(moodDto.getMood());
        moodTracker.setComment(moodDto.getComment());
-       moodTracker.setDateTimeCreated(LocalDateTime.now().toString());
-       moodTracker.setDateTimeUpdated(LocalDateTime.now().toString());
+       moodTracker.setCreatedOn(formattedDate);
+       moodTracker.setCreatedAt(LocalTime.now().toString());
        moodTracker.setOwner(foundUser.getUsername());
-       //moodTracker.setUser(foundUser);
+       moodTracker.setUser(foundUser);
         switch (moodTracker.getMood()) {
             case "SAD" -> moodTracker.setRatings(1.0);
             case "ANXIOUS" -> moodTracker.setRatings(2.0);
@@ -48,10 +51,7 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
             default -> moodTracker.setRatings(5.0);
         }
         trackerRepository.save(moodTracker);
-        foundUser.getMoodTrackers().add(moodTracker);
-        userService.saveUser(foundUser);
-        List<Double> ratingList = foundUser.getMoodRatings();
-        foundUser.getMoodTrackers().forEach(tracker -> ratingList.add(tracker.getRatings()));
+        foundUser.getMoodRatings().add(moodTracker.getRatings());
         userService.saveUser(foundUser);
         return moodTracker;
     }
@@ -82,6 +82,21 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
     public List<MoodTracker> findUserMoodTrackers(String username) {
         AppUser foundUser = userService.findUserByUsername(username);
         return foundUser.getMoodTrackers();
+    }
+
+    @Override
+    public List<MoodTracker> findAllMoodTrackersForUser(String username) {
+        return null;
+    }
+
+    @Override
+    public List<MoodTracker> findAllMoodTrackersForUserByDate(String username) {
+        return null;
+    }
+
+    @Override
+    public List<MoodTracker> findAllMoodTrackersForUserByMood(String username) {
+        return null;
     }
 
     @Override
