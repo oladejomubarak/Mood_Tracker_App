@@ -47,8 +47,8 @@ public class JournalEntryServiceImpl implements JournalEntryService {
         }
         AppUser foundUser = userService.findUserByUsername(entryDto.getUsername());
         JournalEntry entry = new JournalEntry();
-        entry.setTitle(entryDto.getTitle().toLowerCase());
-        entry.setCategory(entryDto.getCategory());
+        entry.setTitle(entryDto.getTitle());
+        entry.setCategory(entryDto.getCategory().toLowerCase());
         entry.setText(entryDto.getText());
         entry.setVoiceUrl(entryDto.getVoiceUrl());
         entry.setCreatedOn(formattedDate);
