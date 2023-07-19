@@ -40,7 +40,11 @@ public class JournalEntryServiceImpl implements JournalEntryService {
 
     @Override
     public JournalEntry createJournalEntry(EntryDto entryDto) {
-
+        if(!entryCategoryService.findAllCategories().contains(entryDto.getCategory())){
+            EntryCategory entryCategory = new EntryCategory();
+            entryCategory.setName(entryDto.getCategory().toLowerCase());
+            entryCategoryService.saveEntryCategory(entryCategory);
+        }
         AppUser foundUser = userService.findUserByUsername(entryDto.getUsername());
         JournalEntry entry = new JournalEntry();
         entry.setTitle(entryDto.getTitle().toLowerCase());
@@ -57,22 +61,13 @@ public class JournalEntryServiceImpl implements JournalEntryService {
 
     @Override
     public JournalEntry createJournalEntryTwo(EntryDto entryDto) {
-
+        if(!entryCategoryService.findAllCategories().contains(entryDto.getCategory())){
+            EntryCategory entryCategory = new EntryCategory();
+            entryCategory.setName(entryDto.getCategory().toLowerCase());
+            entryCategoryService.saveEntryCategory(entryCategory);
+        }
         AppUser foundUser = userService.findUserByUsername(entryDto.getUsername());
         JournalEntry entry = new JournalEntry();
-        entryCategoryService.findAllCategoryClasses().forEach(entryCategory -> {
-            if(entryCategory.getName().equalsIgnoreCase(entryDto.getCategory())) {
-                entry.setCategory(entryCategory.getName());
-                entryRepository.save(entry);
-
-            } else {
-                EntryCategory entryCategory1 = new EntryCategory();
-                entryCategory1.setName(entryDto.getCategory());
-                entryCategoryService.saveEntryCategory(entryCategory1);
-                entry.setCategory(entryDto.getCategory());
-                entryRepository.save(entry);
-            }
-        });
         entry.setText(entryDto.getText());
         entry.setTitle(entryDto.getTitle());
 
@@ -82,12 +77,11 @@ public class JournalEntryServiceImpl implements JournalEntryService {
             String firstWord = words[0];
             entry.setTitle(firstWord);
         }
-
-//        entry.getCategories().add(entryDto.getCategory());
         entry.setVoiceUrl(entryDto.getVoiceUrl());
         entry.setCreatedOn(formattedDate);
         entry.setCreatedTime(LocalTime.now().toString());
         entry.setUpdatedOn(formattedDate);
+        entry.setCategory(entryDto.getCategory().toLowerCase());
         entry.setUser(foundUser);
         JournalEntry savedEntry = entryRepository.save(entry);
 //        if((Objects.equals(savedEntry.getTitle(), "") || savedEntry.getTitle() == null)
