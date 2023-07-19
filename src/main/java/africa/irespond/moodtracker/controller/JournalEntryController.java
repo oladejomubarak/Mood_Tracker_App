@@ -64,7 +64,6 @@ public class JournalEntryController {
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-
     }
     @GetMapping("entry-by-date")
     public ResponseEntity<?> findEntryByDate(@RequestParam String date){
@@ -78,7 +77,6 @@ public class JournalEntryController {
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-
     }
     @GetMapping("entry-by-title")
     public ResponseEntity<?> findEntryByTitle(@RequestParam String title){
@@ -86,18 +84,28 @@ public class JournalEntryController {
     }
 
     @GetMapping("/entries-by-title/{username}")
-    public ResponseEntity<?> findEntriesByKeywordForUser(@PathVariable String username, @RequestParam String keyword){
+    public ResponseEntity<?> findEntriesByTitleForUser(@PathVariable String username, @RequestParam String title){
         try{
-            return ResponseEntity.ok(entryService.findJournalEntryByTitleKeywordForUser(username, keyword));
+            return ResponseEntity.ok(entryService.findJournalEntryByTitleForUser(username, title));
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-
     }
     @GetMapping("entry-by-category")
     public ResponseEntity<?> findEntryByCategory(@RequestParam String category){
         return ResponseEntity.ok(entryService.findJournalEntryByCategory(category));
     }
+
+    @GetMapping("/entries-by-category/{username}")
+    public ResponseEntity<?> findEntriesByCategoryForUser(@PathVariable String username, @RequestParam String category){
+        try{
+            return ResponseEntity.ok(entryService.findJournalEntryByCategoryForUser(username, category));
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
+
     @GetMapping("/entries-by-user")
     public ResponseEntity<?> findAllEntriesForUser(@RequestParam String username){
         try{
