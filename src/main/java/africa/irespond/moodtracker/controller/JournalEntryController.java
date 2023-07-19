@@ -26,6 +26,7 @@ public class JournalEntryController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @GetMapping("/entry/{id}")
     public ResponseEntity<?> findEntry(@PathVariable Long id){
         try{
@@ -43,15 +44,18 @@ public class JournalEntryController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @DeleteMapping("delete-entry/{id}")
     public ResponseEntity<?> deleteEntry(@PathVariable Long id){
         entryService.deleteJournalEntry(id);
         return ResponseEntity.ok("entry deleted");
     }
+
     @GetMapping("all-entries")
     public ResponseEntity<?> getAllEntries(@RequestParam String keyword){
         return ResponseEntity.ok(entryService.getAllJournalEntries());
     }
+
     @GetMapping("/entries-by-user")
     public ResponseEntity<?> findAllEntriesForUser(@RequestParam String username){
         try{
@@ -60,10 +64,12 @@ public class JournalEntryController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @GetMapping("entry-by-keyword")
     public ResponseEntity<?> findEntryByKeyword(@RequestParam String keyword){
     return ResponseEntity.ok(entryService.findJournalEntryByTitleKeyword(keyword));
     }
+
     @GetMapping("/entries-by-keyword/{username}")
     public ResponseEntity<?> findEntriesByKeywordForUser(@PathVariable String username, @RequestParam String keyword){
         try{
@@ -72,6 +78,7 @@ public class JournalEntryController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @GetMapping("entry-by-date")
     public ResponseEntity<?> findEntryByDate(@RequestParam String date){
         return ResponseEntity.ok(entryService.findJournalEntryByDateCreated(date));
@@ -85,6 +92,7 @@ public class JournalEntryController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @GetMapping("entry-by-title")
     public ResponseEntity<?> findEntryByTitle(@RequestParam String title){
         return ResponseEntity.ok(entryService.findJournalEntryByTitle(title));
@@ -98,6 +106,7 @@ public class JournalEntryController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @GetMapping("entry-by-category")
     public ResponseEntity<?> findEntryByCategory(@RequestParam String category){
         return ResponseEntity.ok(entryService.findJournalEntryByCategory(category));
@@ -111,6 +120,7 @@ public class JournalEntryController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @PostMapping("/create-category")
     public ResponseEntity<?> createCategory(@RequestBody String category){
         try{
@@ -124,6 +134,7 @@ public class JournalEntryController {
     public ResponseEntity<?> findAllCategories(){
         return ResponseEntity.ok(entryCategoryService.findAllCategories());
     }
+
     @GetMapping("category-classes")
     public ResponseEntity<?> findAllCategoryClasses(){
         return ResponseEntity.ok(entryCategoryService.findAllCategoryClasses());
