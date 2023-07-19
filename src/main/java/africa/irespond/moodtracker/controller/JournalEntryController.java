@@ -33,8 +33,8 @@ public class JournalEntryController {
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-
     }
+
     @PatchMapping("edit-entry/{id}")
     public ResponseEntity<?> editEntry(@PathVariable Long id, @RequestBody EntryDto entryDto){
         try{
@@ -52,7 +52,14 @@ public class JournalEntryController {
     public ResponseEntity<?> getAllEntries(@RequestParam String keyword){
         return ResponseEntity.ok(entryService.getAllJournalEntries());
     }
-
+    @GetMapping("/entries-by-user")
+    public ResponseEntity<?> findAllEntriesForUser(@RequestParam String username){
+        try{
+            return ResponseEntity.ok(entryService.findAllEntriesByUser(username));
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
     @GetMapping("entry-by-keyword")
     public ResponseEntity<?> findEntryByKeyword(@RequestParam String keyword){
     return ResponseEntity.ok(entryService.findJournalEntryByTitleKeyword(keyword));
@@ -103,19 +110,7 @@ public class JournalEntryController {
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-
     }
-
-    @GetMapping("/entries-by-user")
-    public ResponseEntity<?> findAllEntriesForUser(@RequestParam String username){
-        try{
-            return ResponseEntity.ok(entryService.findAllEntriesByUser(username));
-        } catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-
-    }
-
     @PostMapping("/create-category")
     public ResponseEntity<?> createCategory(@RequestBody String category){
         try{
