@@ -1,6 +1,8 @@
 package africa.irespond.moodtracker.controller;
 
 import africa.irespond.moodtracker.dto.EntryDto;
+import africa.irespond.moodtracker.model.EntryCategory;
+import africa.irespond.moodtracker.service.EntryCategoryService;
 import africa.irespond.moodtracker.service.JournalEntryService;
 import africa.irespond.moodtracker.service.JournalEntryServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 public class JournalEntryController {
     @Autowired
     private JournalEntryService entryService;
+
+    @Autowired
+    private EntryCategoryService entryCategoryService;
 
     @PostMapping("/create-entry")
     public ResponseEntity<?> createEntry(@RequestBody EntryDto entryDto){
@@ -52,13 +57,42 @@ public class JournalEntryController {
     public ResponseEntity<?> findEntryByKeyword(@RequestParam String keyword){
     return ResponseEntity.ok(entryService.findJournalEntryByTitleKeyword(keyword));
     }
+    @GetMapping("/entries-by-keyword/{username}")
+    public ResponseEntity<?> findEntriesByKeywordForUser(@PathVariable String username, @RequestParam String keyword){
+        try{
+            return ResponseEntity.ok(entryService.findJournalEntryByTitleKeywordForUser(username, keyword));
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
     @GetMapping("entry-by-date")
     public ResponseEntity<?> findEntryByDate(@RequestParam String date){
         return ResponseEntity.ok(entryService.findJournalEntryByDateCreated(date));
     }
+
+    @GetMapping("/entries-by-date/{username}")
+    public ResponseEntity<?> findEntriesByDateForUser(@PathVariable String username, @RequestParam String date){
+        try{
+            return ResponseEntity.ok(entryService.findJournalEntryByDateCreatedForUser(username, date));
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
     @GetMapping("entry-by-title")
     public ResponseEntity<?> findEntryByTitle(@RequestParam String title){
         return ResponseEntity.ok(entryService.findJournalEntryByTitle(title));
+    }
+
+    @GetMapping("/entries-by-title/{username}")
+    public ResponseEntity<?> findEntriesByKeywordForUser(@PathVariable String username, @RequestParam String keyword){
+        try{
+            return ResponseEntity.ok(entryService.findJournalEntryByTitleKeywordForUser(username, keyword));
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
     @GetMapping("entry-by-category")
     public ResponseEntity<?> findEntryByCategory(@RequestParam String category){
@@ -72,5 +106,23 @@ public class JournalEntryController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 
+    }
+
+    @PostMapping("/create-category")
+    public ResponseEntity<?> createCategory(@RequestBody String category){
+        try{
+            return ResponseEntity.ok(entryCategoryService.createCategory(category));
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("categories")
+    public ResponseEntity<?> findAllCategories(){
+        return ResponseEntity.ok(entryCategoryService.findAllCategories());
+    }
+    @GetMapping("category-classes")
+    public ResponseEntity<?> findAllCategoryClasses(){
+        return ResponseEntity.ok(entryCategoryService.findAllCategoryClasses());
     }
 }

@@ -43,7 +43,14 @@ public class JournalEntryServiceImpl implements JournalEntryService {
 
         AppUser foundUser = userService.findUserByUsername(entryDto.getUsername());
         JournalEntry entry = new JournalEntry();
-        setEntryCategory(entryDto, entry);
+        entryCategoryService.findAllCategoryClasses().forEach(entryCategory -> {
+            if(entryCategory.getName().equalsIgnoreCase(entryDto.getCategory())) {
+                entry.setCategory(entryCategory.getName());
+            } else {
+               EntryCategory createdCategory = entryCategoryService.createCategory(entryDto.getCategory());
+                entry.setCategory(createdCategory.getName());
+            }
+        });
         entry.setTitle(entryDto.getTitle());
 //        entry.getCategories().add(entryDto.getCategory());
         entry.setText(entryDto.getText());
@@ -60,25 +67,24 @@ public class JournalEntryServiceImpl implements JournalEntryService {
         return entry;
     }
 
-    private void setEntryCategory(EntryDto entryDto, JournalEntry entry) {
-        entryCategoryService.findAllCategoryClasses().forEach(entryCategory -> {
-            if(entryCategory.getName().equalsIgnoreCase(entryDto.getCategory())) {
-                entry.setCategory(entryCategory.getName());
-            } else {
-                EntryCategory entryCategory1 = new EntryCategory();
-                entryCategory1.setName(entryDto.getCategory());
-                entryCategoryService.saveEntryCategory(entryCategory1);
-                entry.setCategory(entryCategory1.getName());
-            }
-        });
-    }
-
     @Override
     public JournalEntry createJournalEntryTwo(EntryDto entryDto) {
 
         AppUser foundUser = userService.findUserByUsername(entryDto.getUsername());
         JournalEntry entry = new JournalEntry();
-        setEntryCategory(entryDto, entry);
+        entryCategoryService.findAllCategoryClasses().forEach(entryCategory -> {
+            if(entryCategory.getName().equalsIgnoreCase(entryDto.getCategory())) {
+                entry.setCategory(entryCategory.getName());
+                entryRepository.save(entry);
+
+            } else {
+                EntryCategory entryCategory1 = new EntryCategory();
+                entryCategory1.setName(entryDto.getCategory());
+                entryCategoryService.saveEntryCategory(entryCategory1);
+                entry.setCategory(entryDto.getCategory());
+                entryRepository.save(entry);
+            }
+        });
         entry.setText(entryDto.getText());
         entry.setTitle(entryDto.getTitle());
 
@@ -135,7 +141,19 @@ public class JournalEntryServiceImpl implements JournalEntryService {
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         modelMapper.map(entryDto, foundEntry);
         foundEntry.setUpdatedOn(formattedDate);
-        setEntryCategory(entryDto, foundEntry);
+        entryCategoryService.findAllCategoryClasses().forEach(entryCategory -> {
+            if(entryCategory.getName().equalsIgnoreCase(entryDto.getCategory())) {
+                foundEntry.setCategory(entryCategory.getName());
+                entryRepository.save(foundEntry);
+
+            } else {
+                EntryCategory entryCategory1 = new EntryCategory();
+                entryCategory1.setName(entryDto.getCategory());
+                entryCategoryService.saveEntryCategory(entryCategory1);
+                foundEntry.setCategory(entryDto.getCategory());
+                entryRepository.save(foundEntry);
+            }
+        });
         entryRepository.save(foundEntry);
         return foundEntry;
     }

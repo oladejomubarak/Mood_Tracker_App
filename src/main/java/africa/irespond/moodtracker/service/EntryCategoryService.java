@@ -12,4 +12,6 @@ public interface EntryCategoryService {
 
     Set<String> findAllCategories();
 
+    EntryCategory createCategory(String category);
+
 }

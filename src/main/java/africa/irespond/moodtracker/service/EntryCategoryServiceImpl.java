@@ -28,4 +28,11 @@ public class EntryCategoryServiceImpl implements EntryCategoryService{
         findAllCategoryClasses().forEach(entryCategory -> allCategories.add(entryCategory.getName()));
         return allCategories;
     }
+
+    @Override
+    public EntryCategory createCategory(String category) {
+        EntryCategory entryCategory = new EntryCategory();
+        entryCategory.setName(category);
+        return entryCategoryRepository.save(entryCategory);
+    }
 }
