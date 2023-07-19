@@ -159,7 +159,7 @@ public class JournalEntryServiceImpl implements JournalEntryService {
         boolean isValidKeyword = keyword.length() > 3;
         List <JournalEntry> foundEntries = new ArrayList<>();
         for (JournalEntry entry: getAllJournalEntries()) {
-            if(isValidKeyword && entry.getTitle().contains(keyword)) {
+            if(isValidKeyword && entry.getTitle() != null && entry.getTitle().contains(keyword)) {
                 foundEntries.add(entry);
             }
         }
@@ -170,7 +170,7 @@ public class JournalEntryServiceImpl implements JournalEntryService {
         boolean isValidKeyword = keyword.length() > 3;
         List <JournalEntry> foundEntries = new ArrayList<>();
         for (JournalEntry entry: findAllEntriesByUser(username)) {
-            if(isValidKeyword && entry.getTitle().contains(keyword)) {
+            if(isValidKeyword && entry.getTitle() != null && entry.getTitle().contains(keyword)) {
                 foundEntries.add(entry);
             }
         }
@@ -202,7 +202,7 @@ public class JournalEntryServiceImpl implements JournalEntryService {
         List <JournalEntry> foundEntries = new ArrayList<>();
         List <JournalEntry> userEntries = findAllEntriesByUser(username);
         userEntries.forEach( entry -> {
-            if(entry.getTitle().equalsIgnoreCase(entryTitle)) foundEntries.add(entry);
+            if(entry.getTitle() != null && entry.getTitle().equalsIgnoreCase(entryTitle)) foundEntries.add(entry);
         });
         return foundEntries;
     }
@@ -211,7 +211,7 @@ public class JournalEntryServiceImpl implements JournalEntryService {
     public List<JournalEntry> findJournalEntryByCategory(String category) {
         List<JournalEntry> entryList = new ArrayList<>();
     getAllJournalEntries().forEach( journalEntry -> {
-        if(journalEntry.getCategory().equalsIgnoreCase(category)) entryList.add(journalEntry);
+        if(journalEntry.getCategory() != null && journalEntry.getCategory().equalsIgnoreCase(category)) entryList.add(journalEntry);
     });
         return entryList;
     }
@@ -221,7 +221,7 @@ public class JournalEntryServiceImpl implements JournalEntryService {
         List <JournalEntry> foundEntries = new ArrayList<>();
         List <JournalEntry> userEntries = findAllEntriesByUser(username);
         userEntries.forEach( entry -> {
-            if(entry.getCategory().equalsIgnoreCase(category)) foundEntries.add(entry);
+            if(entry.getCategory() != null && entry.getCategory().equalsIgnoreCase(category)) foundEntries.add(entry);
         });
         return foundEntries;
     }
