@@ -40,6 +40,7 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
        moodTracker.setMood(moodDto.getMood());
        moodTracker.setComment(moodDto.getComment());
        moodTracker.setCreatedOn(formattedDate);
+       moodTracker.setUpdatedOn(formattedDate);
        moodTracker.setCreatedAt(LocalTime.now().toString());
        moodTracker.setOwner(foundUser.getUsername());
        moodTracker.setUser(foundUser);
@@ -67,9 +68,8 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
         MoodTracker foundTracker = findMood(moodTrackerId);
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         modelMapper.map(moodDto, foundTracker);
-        foundTracker.setDateTimeUpdated(LocalDateTime.now().toString());
+        foundTracker.setUpdatedOn(formattedDate);
         trackerRepository.save(foundTracker);
-
         return foundTracker;
     }
 
@@ -81,12 +81,13 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
     @Override
     public List<MoodTracker> findUserMoodTrackers(String username) {
         AppUser foundUser = userService.findUserByUsername(username);
-        return foundUser.getMoodTrackers();
+        return null;
     }
 
     @Override
     public List<MoodTracker> findAllMoodTrackersForUser(String username) {
-        return null;
+        AppUser foundUser = userService.findUserByUsername(username);
+        return trackerRepository.findMoodTrackersByUser(foundUser);
     }
 
     @Override
