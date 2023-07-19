@@ -40,7 +40,7 @@ public class JournalEntryServiceImpl implements JournalEntryService {
 
     @Override
     public JournalEntry createJournalEntry(EntryDto entryDto) {
-        if(!entryCategoryService.findAllCategories().contains(entryDto.getCategory())){
+        if(!entryCategoryService.findAllCategories().contains(entryDto.getCategory().toLowerCase())){
             EntryCategory entryCategory = new EntryCategory();
             entryCategory.setName(entryDto.getCategory().toLowerCase());
             entryCategoryService.saveEntryCategory(entryCategory);
@@ -61,7 +61,7 @@ public class JournalEntryServiceImpl implements JournalEntryService {
 
     @Override
     public JournalEntry createJournalEntryTwo(EntryDto entryDto) {
-        if(!entryCategoryService.findAllCategories().contains(entryDto.getCategory())){
+        if(!entryCategoryService.findAllCategories().contains(entryDto.getCategory().toLowerCase())){
             EntryCategory entryCategory = new EntryCategory();
             entryCategory.setName(entryDto.getCategory().toLowerCase());
             entryCategoryService.saveEntryCategory(entryCategory);
