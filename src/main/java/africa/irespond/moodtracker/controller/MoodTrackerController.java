@@ -65,7 +65,7 @@ public class MoodTrackerController {
     }
 
     @GetMapping("/all-graphs")
-    public ResponseEntity<?> findAllMoodGraphs(@) {
+    public ResponseEntity<?> findAllMoodGraphs() {
         return ResponseEntity.ok(moodTrackerService.findAllMoodGraphs());
     }
 }
