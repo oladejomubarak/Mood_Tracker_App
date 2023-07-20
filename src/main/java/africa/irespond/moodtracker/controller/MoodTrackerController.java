@@ -38,4 +38,12 @@ public class MoodTrackerController {
     public ResponseEntity<?> findTrackersByUsername(@PathVariable String username){
         return ResponseEntity.ok(moodTrackerService.findUserMoodTrackers(username));
     }
+    @GetMapping("/trackers-by-mood/{username}")
+    public ResponseEntity<?> findEntriesByCategoryForUser(@PathVariable String username, @RequestParam String mood){
+        try{
+            return ResponseEntity.ok(moodTrackerService.findAllMoodTrackersForUserByMood(username, mood));
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

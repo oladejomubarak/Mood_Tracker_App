@@ -91,13 +91,15 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
     }
 
     @Override
-    public List<MoodTracker> findAllMoodTrackersForUserByDate(String username) {
-        return null;
+    public List<MoodTracker> findAllMoodTrackersForUserByDate(String username, String date) {
+        AppUser foundUser = userService.findUserByUsername(username);
+        return trackerRepository.findMoodTrackersByUserAndCreatedOn(foundUser, date);
     }
 
     @Override
-    public List<MoodTracker> findAllMoodTrackersForUserByMood(String username) {
-        return null;
+    public List<MoodTracker> findAllMoodTrackersForUserByMood(String username, String mood) {
+        AppUser foundUser = userService.findUserByUsername(username);
+        return trackerRepository.findMoodTrackersByUserAndMoodIgnoreCase(foundUser, mood);
     }
 
     @Override
@@ -112,15 +114,7 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
                     .orElse(0.0);
             listOfRatings.clear();
             userService.saveUser(user);
-//            if(average > 0.0 && listOfRatings.size() > 0 ) {
-//                WeeklyMoodTracker moodTracker = new WeeklyMoodTracker();
-//                moodTracker.setRatings(average);
-//                //moodTracker.setUser(user);
-//                weeklyMoodTrackerRepository.save(moodTracker);
-//                user.getWeeklyMoodTrackers().add(moodTracker);
-//                user.setDailyMoodTrackers(user.getDailyMoodTrackers());
-//                userService.saveUser(user);
-//            }
+
             if(average > 4.0 && average <= 5.0) {
                 user.setMoodTrackerMessage("Dear "+user.getUsername()+", from the mood entries you recorded last month," +
                         "it can be concluded that you had an excellent mood change");
@@ -151,12 +145,13 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
         List<AppUser> allUsers = userService.findAllUsers();
        MoodGraph moodGraph = new MoodGraph();
         for (AppUser user: allUsers) {
-            List<Double> listOfRatings = user.getMoodRatings();
-            listOfRatings.clear();
+           user.getMoodRatings().clear();
+
             user.getMoodGraphs().clear();
+
             userService.saveUser(user);
-            user.getMoodTrackers().forEach(tracker -> listOfRatings.add(tracker.getRatings()));
-            listOfRatings.forEach(rating ->{
+
+            user.getMoodRatings().forEach(rating ->{
                 if(rating == 5.0){
                     moodGraph.setRate(100);
                 } else if (rating == 4.0) {
