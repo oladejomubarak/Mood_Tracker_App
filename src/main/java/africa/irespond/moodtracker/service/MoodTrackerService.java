@@ -13,9 +13,6 @@ public interface MoodTrackerService {
     MoodTracker findMood(Long moodTrackerId);
     MoodTracker editMoodTracker(Long moodTrackerId, MoodDto moodDto);
     void deleteMoodTracker(Long moodTrackerId);
-
-    List<MoodTracker>findUserMoodTrackers(String username);
-
     List<MoodTracker> findAllMoodTrackersForUser(String username);
     List<MoodTracker> findAllMoodTrackersForUserByDate(String username, String date);
     List<MoodTracker> findAllMoodTrackersForUserByMood(String username, String mood);
@@ -23,6 +20,7 @@ public interface MoodTrackerService {
 
     void plotMoodGraph();
 
-
+    List<MoodGraph> findGraphsByUser(String username);
+    List<MoodGraph> findAllMoodGraphs();
 
 }

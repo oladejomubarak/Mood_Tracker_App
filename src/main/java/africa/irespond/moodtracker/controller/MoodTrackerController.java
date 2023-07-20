@@ -29,14 +29,14 @@ public class MoodTrackerController {
     public ResponseEntity<?> editMood(@PathVariable Long moodId, MoodDto moodDto){
         return ResponseEntity.ok(moodTrackerService.editMoodTracker(moodId, moodDto));
     }
-    @DeleteMapping("delet-mood")
+    @DeleteMapping("delete-mood")
     public ResponseEntity<?> deleteMood(@RequestParam Long moodTrackerId){
         moodTrackerService.deleteMoodTracker(moodTrackerId);
         return ResponseEntity.ok("mood tracker deleted");
     }
     @GetMapping("trackers-by-username/{username}")
     public ResponseEntity<?> findTrackersByUsername(@PathVariable String username){
-        return ResponseEntity.ok(moodTrackerService.findUserMoodTrackers(username));
+        return ResponseEntity.ok(moodTrackerService.findAllMoodTrackersForUser(username));
     }
     @GetMapping("/trackers-by-mood/{username}")
     public ResponseEntity<?> findEntriesByCategoryForUser(@PathVariable String username, @RequestParam String mood){
@@ -45,5 +45,27 @@ public class MoodTrackerController {
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+    @GetMapping("/trackers-by-date/{username}")
+    public ResponseEntity<?> findEntriesByDateForUser(@PathVariable String username, @RequestParam String date){
+        try{
+            return ResponseEntity.ok(moodTrackerService.findAllMoodTrackersForUserByDate(username, date));
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/graphs-by-user/{username}")
+    public ResponseEntity<?> findAllMoodGraphsByUser(@PathVariable String username){
+        try{
+            return ResponseEntity.ok(moodTrackerService.findGraphsByUser(username));
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/all-graphs")
+    public ResponseEntity<?> findAllMoodGraphs(@) {
+        return ResponseEntity.ok(moodTrackerService.findAllMoodGraphs());
     }
 }

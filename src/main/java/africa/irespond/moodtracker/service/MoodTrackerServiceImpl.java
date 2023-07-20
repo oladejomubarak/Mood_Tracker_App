@@ -78,11 +78,6 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
         MoodTracker foundTracker = findMood(moodTrackerId);
         trackerRepository.delete(foundTracker);
     }
-    @Override
-    public List<MoodTracker> findUserMoodTrackers(String username) {
-        AppUser foundUser = userService.findUserByUsername(username);
-        return null;
-    }
 
     @Override
     public List<MoodTracker> findAllMoodTrackersForUser(String username) {
@@ -104,9 +99,7 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
 
     @Override
     public void summarizeMoodRating() {
-        List<AppUser> allUsers = userService.findAllUsers();
-
-        for (AppUser user: allUsers ) {
+        for (AppUser user: userService.findAllUsers()) {
             List<Double> listOfRatings = user.getMoodRatings();
             double average =  listOfRatings.stream()
                     .mapToDouble(Double::doubleValue)
@@ -143,15 +136,9 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
     public void plotMoodGraph() {
         AtomicInteger dayCounter = new AtomicInteger(1);
         List<AppUser> allUsers = userService.findAllUsers();
-       MoodGraph moodGraph = new MoodGraph();
         for (AppUser user: allUsers) {
-           user.getMoodRatings().clear();
-
-            user.getMoodGraphs().clear();
-
-            userService.saveUser(user);
-
             user.getMoodRatings().forEach(rating ->{
+                MoodGraph moodGraph = new MoodGraph();
                 if(rating == 5.0){
                     moodGraph.setRate(100);
                 } else if (rating == 4.0) {
@@ -165,14 +152,23 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
                 } else {
                     moodGraph.setRate(0);
                 }
+                moodGraph.setUser(user);
                 moodGraph.setDayOfTheMonth(dayCounter.get());
                 dayCounter.getAndIncrement();
-                moodGraph.setOwnedBy(user.getUsername());
                moodGraphRepository.save(moodGraph);
-               user.getMoodGraphs().add(moodGraph);
-               userService.saveUser(user);
             });
         }
         //return moodGraph;
+    }
+
+    @Override
+    public List<MoodGraph> findGraphsByUser(String username) {
+
+        return moodGraphRepository.findMoodGraphsByUser(userService.findUserByUsername(username));
+    }
+
+    @Override
+    public List<MoodGraph> findAllMoodGraphs() {
+        return moodGraphRepository.findAll();
     }
 }

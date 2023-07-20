@@ -31,12 +31,6 @@ public class JournalEntryServiceImpl implements JournalEntryService {
     private ModelMapper modelMapper;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private final String formattedDate = LocalDate.now().format(dateFormatter);
-//    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-//    private final String formattedTime = LocalTime.now().format(timeFormatter);
-
-
-
-
 
     @Override
     public JournalEntry createJournalEntry(EntryDto entryDto) {
