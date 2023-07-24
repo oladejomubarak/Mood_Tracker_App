@@ -16,15 +16,6 @@ public class AppUser {
     private Long id;
 
     private String username;
-
-//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
-//    @ToString.Exclude
-//    private List<MoodTracker> moodTrackers;
-
-//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
-//    @ToString.Exclude
-//    private List<JournalEntry> entries= new ArrayList<>();
-
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
     @ToString.Exclude
     private List<MoodGraph> moodGraphs;
