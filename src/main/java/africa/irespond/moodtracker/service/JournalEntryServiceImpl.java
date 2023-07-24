@@ -15,6 +15,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -64,46 +65,45 @@ public class JournalEntryServiceImpl implements JournalEntryService {
         JournalEntry entry = new JournalEntry();
         entry.setText(entryDto.getText());
         entry.setTitle(entryDto.getTitle());
-
-        if((entryDto.getTitle().equals("") || entryDto.getTitle() == null)
-                && (!entryDto.getText().equals("") || entryDto.getText() != null)) {
-            String[] words = entryDto.getText().split("\\s+");
-            String firstWord = words[0];
-            entry.setTitle(firstWord);
-        }
+        setTitle(entryDto, entry);
         entry.setVoiceUrl(entryDto.getVoiceUrl());
         entry.setCreatedOn(formattedDate);
         entry.setCreatedTime(LocalTime.now().toString());
         entry.setUpdatedOn(formattedDate);
         entry.setCategory(entryDto.getCategory().toLowerCase());
         entry.setUser(foundUser);
-        JournalEntry savedEntry = entryRepository.save(entry);
+//        JournalEntry savedEntry = entryRepository.save(entry);
 //        if((Objects.equals(savedEntry.getTitle(), "") || savedEntry.getTitle() == null)
 //                && savedEntry.getText() != null ){
 //             String[] words = savedEntry.getText().split("\\s+");
 //             String firstWord = words[0];
 //             savedEntry.setTitle(firstWord);
 //             entryRepository.save(savedEntry);
-//            foundUser.getEntries().add(savedEntry);
-//            userService.saveUser(foundUser);
 //            }
-//        foundUser.getEntries().add(savedEntry);
-       // userService.saveUser(foundUser);
-        return savedEntry;
+        return entry;
     }
 
-    //    private String getTitleFormat(EntryDto entryDto) {
-//        String[] words = entryDto.getTitle().split(" ");
-//
-//        StringBuilder sb = new StringBuilder();
-//        for (String word : words) {
-//            String firstLetter = word.substring(0, 1).toUpperCase();
-//            String restOfWord = word.substring(1);
-//            String capitalizedWord = firstLetter + restOfWord;
-//            sb.append(capitalizedWord).append(" ");
-//        }
-//        return sb.toString().trim();
-//    }
+    private void setTitle(EntryDto entryDto, JournalEntry entry) {
+        if((entryDto.getTitle().equals("") || entryDto.getTitle() == null)
+                && (!entryDto.getText().equals("") || entryDto.getText() != null)) {
+            String[] words = entryDto.getText().split("\\s+");
+            String firstWord = words[0];
+            entry.setTitle(firstWord);
+        }
+    }
+
+    private String getTitleFormat(EntryDto entryDto) {
+        String[] words = entryDto.getTitle().split(" ");
+
+        StringBuilder sb = new StringBuilder();
+        for (String word : words) {
+            String firstLetter = word.substring(0, 1).toUpperCase();
+            String restOfWord = word.substring(1);
+            String capitalizedWord = firstLetter + restOfWord;
+            sb.append(capitalizedWord).append(" ");
+        }
+        return sb.toString().trim();
+    }
 
     @Override
     public JournalEntry findJournalEntryById(Long entryId) {

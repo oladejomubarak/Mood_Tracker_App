@@ -27,6 +27,15 @@ public class JournalEntryController {
         }
     }
 
+    @PostMapping("/create-entry2")
+    public ResponseEntity<?> createEntry2(@RequestBody EntryDto entryDto){
+        try{
+            return ResponseEntity.ok(entryService.createJournalEntryTwo(entryDto));
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping("/entry/{id}")
     public ResponseEntity<?> findEntry(@PathVariable Long id){
         try{
