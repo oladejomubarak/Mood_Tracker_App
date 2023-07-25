@@ -8,10 +8,9 @@ import java.util.Set;
 
 public interface EntryCategoryService {
     List<EntryCategory> findAllCategoryClasses();
-    void saveEntryCategory(EntryCategory entryCategory);
 
     Set<String> findAllCategories();
 
-    EntryCategory createCategory(String category);
+    void createCategory(String category);
 
 }

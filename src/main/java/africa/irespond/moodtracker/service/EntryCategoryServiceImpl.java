@@ -2,6 +2,7 @@ package africa.irespond.moodtracker.service;
 
 import africa.irespond.moodtracker.model.EntryCategory;
 import africa.irespond.moodtracker.repository.EntryCategoryRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,15 +13,13 @@ import java.util.Set;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class EntryCategoryServiceImpl implements EntryCategoryService{
-    @Autowired
-    private EntryCategoryRepository entryCategoryRepository;
+
+    private final EntryCategoryRepository entryCategoryRepository;
 
     public List<EntryCategory> findAllCategoryClasses(){
         return entryCategoryRepository.findAll();
-    }
-   public void saveEntryCategory(EntryCategory entryCategory){
-        entryCategoryRepository.save(entryCategory);
     }
 
     public Set<String> findAllCategories(){
@@ -30,9 +29,9 @@ public class EntryCategoryServiceImpl implements EntryCategoryService{
     }
 
     @Override
-    public EntryCategory createCategory(String category) {
+    public void createCategory(String category) {
         EntryCategory entryCategory = new EntryCategory();
         entryCategory.setName(category);
-        return entryCategoryRepository.save(entryCategory);
+        entryCategoryRepository.save(entryCategory);
     }
 }

@@ -15,7 +15,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Slf4j
@@ -57,33 +56,22 @@ public class JournalEntryServiceImpl implements JournalEntryService {
     @Override
     public JournalEntry createJournalEntryTwo(EntryDto entryDto) {
         if(!entryCategoryService.findAllCategories().contains(entryDto.getCategory().toLowerCase())){
-            EntryCategory entryCategory = new EntryCategory();
-            entryCategory.setName(entryDto.getCategory().toLowerCase());
-            entryCategoryService.saveEntryCategory(entryCategory);
+            entryCategoryService.createCategory(entryDto.getCategory().toLowerCase());
         }
         AppUser foundUser = userService.findUserByUsername(entryDto.getUsername());
         JournalEntry entry = new JournalEntry();
         entry.setText(entryDto.getText());
         entry.setTitle(entryDto.getTitle());
-        setTitle(entryDto, entry);
+        setDefaultTitle(entryDto, entry);
         entry.setVoiceUrl(entryDto.getVoiceUrl());
         entry.setCreatedOn(formattedDate);
         entry.setCreatedTime(LocalTime.now().toString());
         entry.setUpdatedOn(formattedDate);
         entry.setCategory(entryDto.getCategory().toLowerCase());
         entry.setUser(foundUser);
-//        JournalEntry savedEntry = entryRepository.save(entry);
-//        if((Objects.equals(savedEntry.getTitle(), "") || savedEntry.getTitle() == null)
-//                && savedEntry.getText() != null ){
-//             String[] words = savedEntry.getText().split("\\s+");
-//             String firstWord = words[0];
-//             savedEntry.setTitle(firstWord);
-//             entryRepository.save(savedEntry);
-//            }
         return entry;
     }
-
-    private void setTitle(EntryDto entryDto, JournalEntry entry) {
+    private void setDefaultTitle(EntryDto entryDto, JournalEntry entry) {
         if((entryDto.getTitle().equals("") || entryDto.getTitle() == null)
                 && (!entryDto.getText().equals("") || entryDto.getText() != null)) {
             String[] words = entryDto.getText().split("\\s+");
@@ -123,9 +111,7 @@ public class JournalEntryServiceImpl implements JournalEntryService {
                 entryRepository.save(foundEntry);
 
             } else {
-                EntryCategory entryCategory1 = new EntryCategory();
-                entryCategory1.setName(entryDto.getCategory());
-                entryCategoryService.saveEntryCategory(entryCategory1);
+                entryCategoryService.createCategory(entryDto.getCategory());
                 foundEntry.setCategory(entryDto.getCategory());
                 entryRepository.save(foundEntry);
             }
