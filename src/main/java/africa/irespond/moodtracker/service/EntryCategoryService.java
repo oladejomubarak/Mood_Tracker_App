@@ -11,6 +11,7 @@ public interface EntryCategoryService {
 
     Set<String> findAllCategories();
 
-    void createCategory(String category);
+    EntryCategory createCategory(String category);
 
+    String getCategoryByName(String categoryName);
 }

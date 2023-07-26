@@ -35,14 +35,12 @@ public class JournalEntryServiceImpl implements JournalEntryService {
     @Override
     public JournalEntry createJournalEntry(EntryDto entryDto) {
         if(!entryCategoryService.findAllCategories().contains(entryDto.getCategory().toLowerCase())){
-            EntryCategory entryCategory = new EntryCategory();
-            entryCategory.setName(entryDto.getCategory().toLowerCase());
-            entryCategoryService.saveEntryCategory(entryCategory);
+            entryCategoryService.createCategory(entryDto.getCategory().toLowerCase());
         }
         AppUser foundUser = userService.findUserByUsername(entryDto.getUsername());
         JournalEntry entry = new JournalEntry();
         entry.setTitle(entryDto.getTitle());
-        entry.setCategory(entryDto.getCategory().toLowerCase());
+        entry.setCategory(entryCategoryService.getCategoryByName(entryDto.getCategory().toLowerCase()));
         entry.setText(entryDto.getText());
         entry.setVoiceUrl(entryDto.getVoiceUrl());
         entry.setCreatedOn(formattedDate);
@@ -80,19 +78,6 @@ public class JournalEntryServiceImpl implements JournalEntryService {
         }
     }
 
-    private String getTitleFormat(EntryDto entryDto) {
-        String[] words = entryDto.getTitle().split(" ");
-
-        StringBuilder sb = new StringBuilder();
-        for (String word : words) {
-            String firstLetter = word.substring(0, 1).toUpperCase();
-            String restOfWord = word.substring(1);
-            String capitalizedWord = firstLetter + restOfWord;
-            sb.append(capitalizedWord).append(" ");
-        }
-        return sb.toString().trim();
-    }
-
     @Override
     public JournalEntry findJournalEntryById(Long entryId) {
 
@@ -106,13 +91,9 @@ public class JournalEntryServiceImpl implements JournalEntryService {
         modelMapper.map(entryDto, foundEntry);
         foundEntry.setUpdatedOn(formattedDate);
         entryCategoryService.findAllCategoryClasses().forEach(entryCategory -> {
-            if(entryCategory.getName().equalsIgnoreCase(entryDto.getCategory())) {
-                foundEntry.setCategory(entryCategory.getName());
-                entryRepository.save(foundEntry);
-
-            } else {
+            if(!entryCategory.getName().equalsIgnoreCase(entryDto.getCategory())) {
                 entryCategoryService.createCategory(entryDto.getCategory());
-                foundEntry.setCategory(entryDto.getCategory());
+                foundEntry.setCategory(entryCategory.getName().toLowerCase());
                 entryRepository.save(foundEntry);
             }
         });

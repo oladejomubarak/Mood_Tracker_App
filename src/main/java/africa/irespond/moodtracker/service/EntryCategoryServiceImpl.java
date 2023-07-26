@@ -29,9 +29,15 @@ public class EntryCategoryServiceImpl implements EntryCategoryService{
     }
 
     @Override
-    public void createCategory(String category) {
+    public EntryCategory createCategory(String category) {
         EntryCategory entryCategory = new EntryCategory();
         entryCategory.setName(category);
-        entryCategoryRepository.save(entryCategory);
+        return entryCategoryRepository.save(entryCategory);
+    }
+
+    @Override
+    public String getCategoryByName(String categoryName) {
+        EntryCategory foundCategory = entryCategoryRepository.findByNameIgnoreCase(categoryName);
+        return foundCategory.getName();
     }
 }

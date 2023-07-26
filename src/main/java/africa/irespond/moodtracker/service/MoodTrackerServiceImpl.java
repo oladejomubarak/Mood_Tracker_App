@@ -20,13 +20,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 @RequiredArgsConstructor
 public class MoodTrackerServiceImpl implements MoodTrackerService{
-    @Autowired
-    private TrackerRepository trackerRepository;
-    @Autowired
-    private MoodGraphRepository moodGraphRepository;
-    @Autowired
-    private UserServiceImpl userService;
-    @Autowired
+
+    private final TrackerRepository trackerRepository;
+
+    private final MoodGraphRepository moodGraphRepository;
+
+    private final UserServiceImpl userService;
+
     private final ModelMapper modelMapper;
 
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");

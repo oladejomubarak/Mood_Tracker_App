@@ -133,8 +133,7 @@ public class JournalEntryController {
     @PostMapping("/create-category")
     public ResponseEntity<?> createCategory(@RequestParam String category){
         try{
-            entryCategoryService.createCategory(category);
-            return ResponseEntity.ok("Entry created successfully");
+            return ResponseEntity.ok(entryCategoryService.createCategory(category));
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
