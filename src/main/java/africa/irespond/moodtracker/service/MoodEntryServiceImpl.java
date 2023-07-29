@@ -188,38 +188,8 @@ public class MoodEntryServiceImpl implements MoodEntryService {
             moodGraph.setGraph(moodGraphRating);
             moodGraph.setUser(user);
             moodGraphRepository.save(moodGraph);
-
-
-
-
-
-
-
-
-
-
-
-            user.getMoodRatings().forEach(rating -> {
-                MoodGraph moodGraph = new MoodGraph();
-                if (rating == 5.0) {
-                    moodGraph.setRate(100);
-                } else if (rating == 4.0) {
-                    moodGraph.setRate(80);
-                } else if (rating == 3.0) {
-                    moodGraph.setRate(60);
-                } else if (rating == 2.0) {
-                    moodGraph.setRate(40);
-                } else if (rating == 1.0) {
-                    moodGraph.setRate(20);
-                } else {
-                    moodGraph.setRate(0);
-                }
-                moodGraph.setUser(user);
-                moodGraph.setDayOfTheMonth(dayCounter.get());
-                dayCounter.getAndIncrement();
-                moodGraphRepository.save(moodGraph);
-            });
         }
+        System.out.println(allUsers);
     }
 
     @Override
