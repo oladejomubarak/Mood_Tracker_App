@@ -45,7 +45,7 @@ public class MoodEntryServiceImpl implements MoodEntryService {
         List<MoodEntry> moodEntryList = findAllMoodEntriesForUser(moodDto.getUsername());
 
         for (MoodEntry moodEntry:moodEntryList) {
-            if (moodEntry.getCreatedAt().equals(formattedDate)) throw new RuntimeException(
+            if (moodEntry.getCreatedOn().equals(formattedDate)) throw new RuntimeException(
                     "You have already created mood entry for today, wait till tomorrow");
         }
 
@@ -78,7 +78,7 @@ public class MoodEntryServiceImpl implements MoodEntryService {
     }
 
     @Override
-    public MoodEntry editMoodTracker(Long moodTrackerId, MoodDto moodDto) {
+    public MoodEntry editMoodEntry(Long moodTrackerId, MoodDto moodDto) {
         MoodEntry foundTracker = findMood(moodTrackerId);
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         modelMapper.map(moodDto, foundTracker);
@@ -88,7 +88,7 @@ public class MoodEntryServiceImpl implements MoodEntryService {
     }
 
     @Override
-    public void deleteMoodTracker(Long moodTrackerId) {
+    public void deleteMoodEntry(Long moodTrackerId) {
         MoodEntry foundTracker = findMood(moodTrackerId);
         trackerRepository.delete(foundTracker);
     }

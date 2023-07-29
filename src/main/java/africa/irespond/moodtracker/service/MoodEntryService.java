@@ -10,8 +10,8 @@ public interface MoodEntryService {
     MoodEntry createMood(MoodDto moodDto);
 
     MoodEntry findMood(Long moodTrackerId);
-    MoodEntry editMoodTracker(Long moodTrackerId, MoodDto moodDto);
-    void deleteMoodTracker(Long moodTrackerId);
+    MoodEntry editMoodEntry(Long moodTrackerId, MoodDto moodDto);
+    void deleteMoodEntry(Long moodTrackerId);
     List<MoodEntry> findAllMoodEntriesForUser(String username);
     List<MoodEntry> findAllMoodEntriesForUserByDate(String username, String date);
     List<MoodEntry> findAllMoodEntriesForUserByMood(String username, String mood);

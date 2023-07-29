@@ -26,11 +26,11 @@ public class MoodEntryController {
     }
     @PatchMapping("/edit-mood{moodId}")
     public ResponseEntity<?> editMood(@PathVariable Long moodId, MoodDto moodDto){
-        return ResponseEntity.ok(moodTrackerService.editMoodTracker(moodId, moodDto));
+        return ResponseEntity.ok(moodTrackerService.editMoodEntry(moodId, moodDto));
     }
     @DeleteMapping("delete-mood")
     public ResponseEntity<?> deleteMood(@RequestParam Long moodTrackerId){
-        moodTrackerService.deleteMoodTracker(moodTrackerId);
+        moodTrackerService.deleteMoodEntry(moodTrackerId);
         return ResponseEntity.ok("mood tracker deleted");
     }
     @GetMapping("trackers-by-username/{username}")

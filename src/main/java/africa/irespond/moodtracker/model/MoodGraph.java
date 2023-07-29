@@ -13,8 +13,6 @@ public class MoodGraph {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-//    private int rate;
-//    private int dayOfTheMonth;
     @ElementCollection(fetch = FetchType.EAGER)
     private Map<Integer, Double> graph;
     //private String ownedBy;

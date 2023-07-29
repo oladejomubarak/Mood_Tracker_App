@@ -23,7 +23,7 @@ public class AppUser {
 
     private String moodTrackerMessage;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.EAGER)
     private Map<Integer, Double> moodRatings;
 
 }
