@@ -6,11 +6,9 @@ import africa.irespond.moodtracker.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -19,9 +17,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class MoodTrackerServiceImpl implements MoodTrackerService{
+public class MoodEntryServiceImpl implements MoodEntryService {
 
-    private final TrackerRepository trackerRepository;
+    private final MoodEntryRepository trackerRepository;
 
     private final MoodGraphRepository moodGraphRepository;
 
@@ -34,38 +32,36 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
 
 
     @Override
-    public MoodTracker createMood(MoodDto moodDto) {
-        AppUser foundUser = userService.findUserByUsername(moodDto.getOwner());
-        MoodTracker moodTracker = new MoodTracker();
-       moodTracker.setMood(moodDto.getMood());
-       moodTracker.setComment(moodDto.getComment());
-       moodTracker.setCreatedOn(formattedDate);
-       moodTracker.setUpdatedOn(formattedDate);
-       moodTracker.setCreatedAt(LocalTime.now().toString());
-       moodTracker.setOwner(foundUser.getUsername());
-       moodTracker.setUser(foundUser);
-        switch (moodTracker.getMood()) {
-            case "SAD" -> moodTracker.setRatings(1.0);
-            case "ANXIOUS" -> moodTracker.setRatings(2.0);
-            case "NEUTRAL" -> moodTracker.setRatings(3.0);
-            case "CALM" -> moodTracker.setRatings(4.0);
-            default -> moodTracker.setRatings(5.0);
-        }
-        trackerRepository.save(moodTracker);
-        foundUser.getMoodRatings().add(moodTracker.getRatings());
-        userService.saveUser(foundUser);
-        return moodTracker;
+    public MoodEntry  createMood(MoodDto moodDto) {
+        AppUser foundUser = userService.findUserByUsername(moodDto.getUsername());
+       // Mood mood = Mood.valueOf(moodDto.getMood());
+
+        // Mood enumValue = Mood.fromStringValue(moodDto.getMood());
+
+        MoodEntry moodEntry = new MoodEntry();
+//       moodEntry.setMood(Mood.valueOf(moodDto.getMood()));
+        //moodEntry.setRatings(enumValue.getDoubleValue());
+        moodEntry.setComment(moodDto.getComment());
+        moodEntry.setCreatedOn(formattedDate);
+        moodEntry.setUpdatedOn(formattedDate);
+        moodEntry.setCreatedAt(LocalTime.now().toString());
+        // moodEntry.setOwner(foundUser.getUsername());
+        moodEntry.setUser(foundUser);
+        trackerRepository.save(moodEntry);
+//        foundUser.getMoodRatings().add(moodEntry.getRatings());
+//        userService.saveUser(foundUser);
+        return moodEntry;
     }
 
     @Override
-    public MoodTracker findMood(Long moodTrackerId) {
+    public MoodEntry findMood(Long moodTrackerId) {
 
         return trackerRepository.findById(moodTrackerId).orElseThrow(()-> new RuntimeException("Mood tracker not found"));
     }
 
     @Override
-    public MoodTracker editMoodTracker(Long moodTrackerId, MoodDto moodDto) {
-        MoodTracker foundTracker = findMood(moodTrackerId);
+    public MoodEntry editMoodTracker(Long moodTrackerId, MoodDto moodDto) {
+        MoodEntry foundTracker = findMood(moodTrackerId);
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         modelMapper.map(moodDto, foundTracker);
         foundTracker.setUpdatedOn(formattedDate);
@@ -75,27 +71,28 @@ public class MoodTrackerServiceImpl implements MoodTrackerService{
 
     @Override
     public void deleteMoodTracker(Long moodTrackerId) {
-        MoodTracker foundTracker = findMood(moodTrackerId);
+        MoodEntry foundTracker = findMood(moodTrackerId);
         trackerRepository.delete(foundTracker);
     }
 
     @Override
-    public List<MoodTracker> findAllMoodTrackersForUser(String username) {
+    public List<MoodEntry> findAllMoodTrackersForUser(String username) {
         AppUser foundUser = userService.findUserByUsername(username);
         return trackerRepository.findMoodTrackersByUser(foundUser);
     }
 
     @Override
-    public List<MoodTracker> findAllMoodTrackersForUserByDate(String username, String date) {
+    public List<MoodEntry> findAllMoodTrackersForUserByDate(String username, String date) {
         AppUser foundUser = userService.findUserByUsername(username);
         return trackerRepository.findMoodTrackersByUserAndCreatedOn(foundUser, date);
     }
 
-    @Override
-    public List<MoodTracker> findAllMoodTrackersForUserByMood(String username, String mood) {
-        AppUser foundUser = userService.findUserByUsername(username);
-        return trackerRepository.findMoodTrackersByUserAndMoodIgnoreCase(foundUser, mood);
-    }
+//    @Override
+//    public List<MoodEntry> findAllMoodTrackersForUserByMood(String username, String mood) {
+//        AppUser foundUser = userService.findUserByUsername(username);
+//        Mood moodValue = Mood.valueOf(mood.toUpperCase());
+//        return trackerRepository.findMoodTrackersByUserAndMood(foundUser, moodValue);
+//    }
 
     @Override
     public void summarizeMoodRating() {

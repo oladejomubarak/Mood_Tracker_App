@@ -2,7 +2,6 @@ package africa.irespond.moodtracker.service;
 
 import africa.irespond.moodtracker.dto.UserDto;
 import africa.irespond.moodtracker.model.AppUser;
-import africa.irespond.moodtracker.model.MoodTracker;
 import africa.irespond.moodtracker.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

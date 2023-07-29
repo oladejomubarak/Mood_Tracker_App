@@ -5,14 +5,15 @@ import lombok.Data;
 
 @Entity
 @Data
-public class MoodTracker {
+public class MoodEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String createdOn;
     private String updatedOn;
     private String createdAt;
-    private String mood;
+    @Enumerated(EnumType.STRING)
+    private Mood mood;
     @Column(length = 5000)
     private String comment;
     private double ratings;

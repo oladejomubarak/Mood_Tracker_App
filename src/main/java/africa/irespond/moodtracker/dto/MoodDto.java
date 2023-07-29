@@ -6,5 +6,5 @@ import lombok.Data;
 public class MoodDto {
     private String mood;
     private String comment;
-    private String owner;
+    private String username;
 }
