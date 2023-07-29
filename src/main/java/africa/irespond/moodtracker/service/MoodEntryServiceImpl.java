@@ -56,7 +56,7 @@ public class MoodEntryServiceImpl implements MoodEntryService {
     @Override
     public MoodEntry findMood(Long moodTrackerId) {
 
-        return trackerRepository.findById(moodTrackerId).orElseThrow(()-> new RuntimeException("Mood tracker not found"));
+        return trackerRepository.findById(moodTrackerId).orElseThrow(()-> new RuntimeException("Mood entry not found"));
     }
 
     @Override
