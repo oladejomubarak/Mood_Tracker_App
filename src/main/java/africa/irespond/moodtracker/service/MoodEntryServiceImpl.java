@@ -176,6 +176,28 @@ public class MoodEntryServiceImpl implements MoodEntryService {
     public void plotMoodGraph() {
         List<AppUser> allUsers = userService.findAllUsers();
         for (AppUser user: allUsers) {
+            MoodGraph moodGraph = new MoodGraph();
+            Map<Integer, Double>userRatingList = user.getMoodRatings();
+            Map<Integer, Double>moodGraphRating = new HashMap<>();
+
+            for (Map.Entry<Integer, Double> entry : userRatingList.entrySet()) {
+                Integer key = entry.getKey();
+                Double value = entry.getValue();
+                moodGraphRating.put(key, value);
+            }
+            moodGraph.setGraph(moodGraphRating);
+            moodGraph.setUser(user);
+            moodGraphRepository.save(moodGraph);
+
+
+
+
+
+
+
+
+
+
 
             user.getMoodRatings().forEach(rating -> {
                 MoodGraph moodGraph = new MoodGraph();
