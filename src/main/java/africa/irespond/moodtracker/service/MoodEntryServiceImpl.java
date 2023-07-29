@@ -44,11 +44,9 @@ public class MoodEntryServiceImpl implements MoodEntryService {
 
 
         for (Integer presentDay: foundUser.getMoodRatings().keySet()) {
-            if(presentDay.equals(day)) throw new RuntimeException("You have already created mood entry for today" +
+            if(presentDay.equals(day)) throw new RuntimeException("You have already created mood entry for today, " +
                     "wait till tomorrow");
         }
-
-
 
         MoodEntry moodEntry = new MoodEntry();
         moodEntry.setMood(Mood.valueOf(mood.getStringValue()));
@@ -116,7 +114,9 @@ public class MoodEntryServiceImpl implements MoodEntryService {
                     .mapToDouble(Double::doubleValue)
                     .average()
                     .orElse(0.0);
+
             listOfRatings.clear();
+            user.getMoodRatings().clear();
             userService.saveUser(user);
 
             if(average > 4.0 && average <= 5.0) {
