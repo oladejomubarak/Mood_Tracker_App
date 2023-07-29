@@ -34,13 +34,13 @@ public class MoodEntryServiceImpl implements MoodEntryService {
     @Override
     public MoodEntry  createMood(MoodDto moodDto) {
         AppUser foundUser = userService.findUserByUsername(moodDto.getUsername());
-       // Mood mood = Mood.valueOf(moodDto.getMood());
+       Mood mood = Mood.valueOf(moodDto.getMood().toUpperCase());
 
-        // Mood enumValue = Mood.fromStringValue(moodDto.getMood());
+        //Mood enumValue = Mood.fromStringValue(moodDto.getMood());
 
         MoodEntry moodEntry = new MoodEntry();
-//       moodEntry.setMood(Mood.valueOf(moodDto.getMood()));
-        //moodEntry.setRatings(enumValue.getDoubleValue());
+        moodEntry.setMood(Mood.valueOf(mood.getStringValue()));
+        moodEntry.setRatings(mood.getDoubleValue());
         moodEntry.setComment(moodDto.getComment());
         moodEntry.setCreatedOn(formattedDate);
         moodEntry.setUpdatedOn(formattedDate);
@@ -48,8 +48,8 @@ public class MoodEntryServiceImpl implements MoodEntryService {
         // moodEntry.setOwner(foundUser.getUsername());
         moodEntry.setUser(foundUser);
         trackerRepository.save(moodEntry);
-//        foundUser.getMoodRatings().add(moodEntry.getRatings());
-//        userService.saveUser(foundUser);
+        foundUser.getMoodRatings().add(moodEntry.getRatings());
+        userService.saveUser(foundUser);
         return moodEntry;
     }
 
