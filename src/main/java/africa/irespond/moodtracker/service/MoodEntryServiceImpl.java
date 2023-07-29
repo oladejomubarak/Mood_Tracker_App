@@ -76,23 +76,23 @@ public class MoodEntryServiceImpl implements MoodEntryService {
     }
 
     @Override
-    public List<MoodEntry> findAllMoodTrackersForUser(String username) {
+    public List<MoodEntry> findAllMoodEntriesForUser(String username) {
         AppUser foundUser = userService.findUserByUsername(username);
-        return trackerRepository.findMoodTrackersByUser(foundUser);
+        return trackerRepository.findMoodEntriesByUser(foundUser);
     }
 
     @Override
-    public List<MoodEntry> findAllMoodTrackersForUserByDate(String username, String date) {
+    public List<MoodEntry> findAllMoodEntriesForUserByDate(String username, String date) {
         AppUser foundUser = userService.findUserByUsername(username);
-        return trackerRepository.findMoodTrackersByUserAndCreatedOn(foundUser, date);
+        return trackerRepository.findMoodEntriesByUserAndCreatedOn(foundUser, date);
     }
 
-//    @Override
-//    public List<MoodEntry> findAllMoodTrackersForUserByMood(String username, String mood) {
-//        AppUser foundUser = userService.findUserByUsername(username);
-//        Mood moodValue = Mood.valueOf(mood.toUpperCase());
-//        return trackerRepository.findMoodTrackersByUserAndMood(foundUser, moodValue);
-//    }
+    @Override
+    public List<MoodEntry> findAllMoodEntriesForUserByMood(String username, String mood) {
+        AppUser foundUser = userService.findUserByUsername(username);
+        Mood moodValue = Mood.valueOf(mood.toUpperCase());
+        return trackerRepository.findMoodEntriesByUserAndMood(foundUser, moodValue);
+    }
 
     @Override
     public void summarizeMoodRating() {

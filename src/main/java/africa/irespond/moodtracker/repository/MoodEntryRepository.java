@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface MoodEntryRepository extends JpaRepository<MoodEntry, Long> {
-    List<MoodEntry> findMoodTrackersByUser(AppUser appUser);
-  List<MoodEntry> findMoodTrackersByUserAndMood(AppUser appUser, Mood mood);
-    List<MoodEntry> findMoodTrackersByUserAndCreatedOn(AppUser appUser, String date);
+    List<MoodEntry> findMoodEntriesByUser(AppUser appUser);
+  List<MoodEntry> findMoodEntriesByUserAndMood(AppUser appUser, Mood mood);
+    List<MoodEntry> findMoodEntriesByUserAndCreatedOn(AppUser appUser, String date);
 
 }

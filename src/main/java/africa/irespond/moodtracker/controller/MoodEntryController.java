@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1")
-public class MoodTrackerController {
+public class MoodEntryController {
     @Autowired
     private MoodEntryServiceImpl moodTrackerService;
     @PostMapping("/create-mood")
@@ -35,20 +35,20 @@ public class MoodTrackerController {
     }
     @GetMapping("trackers-by-username/{username}")
     public ResponseEntity<?> findTrackersByUsername(@PathVariable String username){
-        return ResponseEntity.ok(moodTrackerService.findAllMoodTrackersForUser(username));
+        return ResponseEntity.ok(moodTrackerService.findAllMoodEntriesForUser(username));
     }
-//    @GetMapping("/trackers-by-mood/{username}")
-//    public ResponseEntity<?> findEntriesByCategoryForUser(@PathVariable String username, @RequestParam String mood){
-//        try{
-//            return ResponseEntity.ok(moodTrackerService.findAllMoodTrackersForUserByMood(username, mood));
-//        } catch (Exception e){
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
-//    }
+    @GetMapping("/trackers-by-mood/{username}")
+    public ResponseEntity<?> findEntriesByCategoryForUser(@PathVariable String username, @RequestParam String mood){
+        try{
+            return ResponseEntity.ok(moodTrackerService.findAllMoodEntriesForUserByMood(username, mood));
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
     @GetMapping("/trackers-by-date/{username}")
     public ResponseEntity<?> findEntriesByDateForUser(@PathVariable String username, @RequestParam String date){
         try{
-            return ResponseEntity.ok(moodTrackerService.findAllMoodTrackersForUserByDate(username, date));
+            return ResponseEntity.ok(moodTrackerService.findAllMoodEntriesForUserByDate(username, date));
         } catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
