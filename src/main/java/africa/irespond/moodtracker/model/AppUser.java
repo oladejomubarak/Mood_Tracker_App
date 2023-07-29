@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Data
@@ -16,13 +17,13 @@ public class AppUser {
     private Long id;
 
     private String username;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
-    @ToString.Exclude
-    private List<MoodGraph> moodGraphs;
+//    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
+//    @ToString.Exclude
+//    private List<MoodGraph> moodGraphs;
 
     private String moodTrackerMessage;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<Double> moodRatings = new ArrayList<>();
+    @ElementCollection(fetch = FetchType.LAZY)
+    private Map<Integer, Double> moodRatings;
 
 }

@@ -16,7 +16,7 @@ public class MoodGraph {
 //    private int rate;
 //    private int dayOfTheMonth;
     @ElementCollection(fetch = FetchType.EAGER)
-    Map<Integer, Double> graph;
+    private Map<Integer, Double> graph;
     //private String ownedBy;
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)

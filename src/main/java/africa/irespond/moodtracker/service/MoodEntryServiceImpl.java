@@ -11,7 +11,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -30,15 +33,22 @@ public class MoodEntryServiceImpl implements MoodEntryService {
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private final String formattedDate = LocalDate.now().format(dateFormatter);
 
-   private final LocalDate date = LocalDate.parse(formattedDate, dateFormatter);
-
-   private final int day = date.getDayOfMonth();
 
 
     @Override
     public MoodEntry  createMood(MoodDto moodDto) {
         AppUser foundUser = userService.findUserByUsername(moodDto.getUsername());
-       Mood mood = Mood.valueOf(moodDto.getMood().toUpperCase());
+        LocalDate date = LocalDate.parse(formattedDate, dateFormatter);
+        int day = date.getDayOfMonth();
+        Mood mood = Mood.valueOf(moodDto.getMood().toUpperCase());
+
+
+        for (Integer presentDay: foundUser.getMoodRatings().keySet()) {
+            if(presentDay.equals(day)) throw new RuntimeException("You have already created mood entry for today" +
+                    "wait till tomorrow");
+        }
+
+
 
         MoodEntry moodEntry = new MoodEntry();
         moodEntry.setMood(Mood.valueOf(mood.getStringValue()));
@@ -50,7 +60,9 @@ public class MoodEntryServiceImpl implements MoodEntryService {
         // moodEntry.setOwner(foundUser.getUsername());
         moodEntry.setUser(foundUser);
         trackerRepository.save(moodEntry);
-        foundUser.getMoodRatings().add(moodEntry.getRatings());
+        Map<Integer, Double> moodRatings = new HashMap<>();
+        moodRatings.put(day, moodEntry.getRatings());
+        foundUser.setMoodRatings(moodRatings);
         userService.saveUser(foundUser);
         return moodEntry;
     }
@@ -99,7 +111,7 @@ public class MoodEntryServiceImpl implements MoodEntryService {
     @Override
     public void summarizeMoodRating() {
         for (AppUser user: userService.findAllUsers()) {
-            List<Double> listOfRatings = user.getMoodRatings();
+            List<Double> listOfRatings = new ArrayList<>(user.getMoodRatings().values());
             double average =  listOfRatings.stream()
                     .mapToDouble(Double::doubleValue)
                     .average()
