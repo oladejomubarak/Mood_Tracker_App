@@ -42,11 +42,17 @@ public class MoodEntryServiceImpl implements MoodEntryService {
         int day = date.getDayOfMonth();
         Mood mood = Mood.valueOf(moodDto.getMood().toUpperCase());
 
+        List<MoodEntry> moodEntryList = findAllMoodEntriesForUser(moodDto.getUsername());
 
-        for (Integer presentDay: foundUser.getMoodRatings().keySet()) {
-            if(presentDay.equals(day)) throw new RuntimeException("You have already created mood entry for today, " +
-                    "wait till tomorrow");
+        for (MoodEntry moodEntry:moodEntryList) {
+            if (moodEntry.getCreatedAt().equals(formattedDate)) throw new RuntimeException(
+                    "You have already created mood entry for today, wait till tomorrow");
         }
+
+//        for (Integer presentDay: foundUser.getMoodRatings().keySet()) {
+//            if(presentDay.equals(day)) throw new RuntimeException("You have already created mood entry for today, " +
+//                    "wait till tomorrow");
+//        }
 
         MoodEntry moodEntry = new MoodEntry();
         moodEntry.setMood(Mood.valueOf(mood.getStringValue()));
@@ -160,7 +166,6 @@ public class MoodEntryServiceImpl implements MoodEntryService {
 
     @Override
     public List<MoodGraph> findGraphsByUser(String username) {
-
         return moodGraphRepository.findMoodGraphsByUser(userService.findUserByUsername(username));
     }
 
