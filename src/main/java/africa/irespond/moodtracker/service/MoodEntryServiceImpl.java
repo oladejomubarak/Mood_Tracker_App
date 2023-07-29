@@ -30,13 +30,15 @@ public class MoodEntryServiceImpl implements MoodEntryService {
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private final String formattedDate = LocalDate.now().format(dateFormatter);
 
+   private final LocalDate date = LocalDate.parse(formattedDate, dateFormatter);
+
+   private final int day = date.getDayOfMonth();
+
 
     @Override
     public MoodEntry  createMood(MoodDto moodDto) {
         AppUser foundUser = userService.findUserByUsername(moodDto.getUsername());
        Mood mood = Mood.valueOf(moodDto.getMood().toUpperCase());
-
-        //Mood enumValue = Mood.fromStringValue(moodDto.getMood());
 
         MoodEntry moodEntry = new MoodEntry();
         moodEntry.setMood(Mood.valueOf(mood.getStringValue()));
@@ -129,33 +131,38 @@ public class MoodEntryServiceImpl implements MoodEntryService {
 
     }
 
+//    @Override
+//    public void plotMoodGraph() {
+//        AtomicInteger dayCounter = new AtomicInteger(1);
+//        List<AppUser> allUsers = userService.findAllUsers();
+//        for (AppUser user: allUsers) {
+//            user.getMoodRatings().forEach(rating ->{
+//                MoodGraph moodGraph = new MoodGraph();
+//                if(rating == 5.0){
+//                    moodGraph.setRate(100);
+//                } else if (rating == 4.0) {
+//                    moodGraph.setRate(80);
+//                } else if (rating == 3.0) {
+//                    moodGraph.setRate(60);
+//                } else if (rating == 2.0) {
+//                    moodGraph.setRate(40);
+//                } else if(rating == 1.0){
+//                    moodGraph.setRate(20);
+//                } else {
+//                    moodGraph.setRate(0);
+//                }
+//                moodGraph.setUser(user);
+//                moodGraph.setDayOfTheMonth(dayCounter.get());
+//                dayCounter.getAndIncrement();
+//               moodGraphRepository.save(moodGraph);
+//            });
+//        }
+//        //return moodGraph;
+//    }
+
     @Override
     public void plotMoodGraph() {
-        AtomicInteger dayCounter = new AtomicInteger(1);
-        List<AppUser> allUsers = userService.findAllUsers();
-        for (AppUser user: allUsers) {
-            user.getMoodRatings().forEach(rating ->{
-                MoodGraph moodGraph = new MoodGraph();
-                if(rating == 5.0){
-                    moodGraph.setRate(100);
-                } else if (rating == 4.0) {
-                    moodGraph.setRate(80);
-                } else if (rating == 3.0) {
-                    moodGraph.setRate(60);
-                } else if (rating == 2.0) {
-                    moodGraph.setRate(40);
-                } else if(rating == 1.0){
-                    moodGraph.setRate(20);
-                } else {
-                    moodGraph.setRate(0);
-                }
-                moodGraph.setUser(user);
-                moodGraph.setDayOfTheMonth(dayCounter.get());
-                dayCounter.getAndIncrement();
-               moodGraphRepository.save(moodGraph);
-            });
-        }
-        //return moodGraph;
+
     }
 
     @Override
