@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 public class RunMoodRating {
     private final MoodEntryServiceImpl moodTrackerService;
 
-   // @Scheduled(cron = "0 0/3 * * * ?") // Runs every 3 minutes for testing
+   //@Scheduled(cron = "0 0/3 * * * ?") // Runs every 3 minutes for testing
     //@Scheduled(cron = "0 0 0 1 * ?") // Runs monthly (at 12:00am of every first day of the month)
     public void runMoodGraph(){
         moodTrackerService.plotMoodGraph();
