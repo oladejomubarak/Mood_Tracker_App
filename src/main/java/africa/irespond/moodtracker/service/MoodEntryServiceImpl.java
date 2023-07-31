@@ -41,7 +41,6 @@ public class MoodEntryServiceImpl implements MoodEntryService {
         LocalDate date = LocalDate.parse(formattedDate, dateFormatter);
         int day = date.getDayOfMonth();
         Mood mood = Mood.valueOf(moodDto.getMood().toUpperCase());
-
         List<MoodEntry> moodEntryList = findAllMoodEntriesForUser(moodDto.getUsername());
 
         for (MoodEntry moodEntry:moodEntryList) {
@@ -68,7 +67,6 @@ public class MoodEntryServiceImpl implements MoodEntryService {
 
     @Override
     public MoodEntry findMood(Long moodTrackerId) {
-
         return trackerRepository.findById(moodTrackerId).orElseThrow(()-> new RuntimeException("Mood entry not found"));
     }
 
@@ -149,9 +147,7 @@ public class MoodEntryServiceImpl implements MoodEntryService {
         List<AppUser> allUsers = userService.findAllUsers();
         for (AppUser user: allUsers) {
             MoodGraph moodGraph = new MoodGraph();
-            Map<Integer, Double>userRatingMap = user.getMoodRatings();
-            Map<Integer, Double> moodGraphRating = new HashMap<>(userRatingMap);
-
+            Map<Integer, Double> moodGraphRating = new HashMap<>( user.getMoodRatings());
             moodGraph.setGraph(moodGraphRating);
             moodGraph.setUser(user);
             moodGraphRepository.save(moodGraph);
