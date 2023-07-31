@@ -72,12 +72,23 @@ public class MoodEntryServiceImpl implements MoodEntryService {
 
     @Override
     public MoodEntry editMoodEntry(Long moodTrackerId, MoodDto moodDto) {
-        MoodEntry foundTracker = findMood(moodTrackerId);
+        AppUser foundUser = userService.findUserByUsername(moodDto.getUsername());
+        MoodEntry foundEntry = findMood(moodTrackerId);
+        LocalDate date = LocalDate.parse(foundEntry.getCreatedOn(), dateFormatter);
+        int day = date.getDayOfMonth();
         modelMapper.getConfiguration().setSkipNullEnabled(true);
-        modelMapper.map(moodDto, foundTracker);
-        foundTracker.setUpdatedOn(formattedDate);
-        trackerRepository.save(foundTracker);
-        return foundTracker;
+        modelMapper.map(moodDto, foundEntry);
+        foundEntry.setUpdatedOn(formattedDate);
+        trackerRepository.save(foundEntry);
+        if(moodDto.getMood() != null || !moodDto.getMood().equals("")) {
+            for (Map.Entry<Integer, Double> entrySet : foundUser.getMoodRatings().entrySet()) {
+                if (entrySet.getKey().equals(day))
+                    foundUser.getMoodRatings().remove(entrySet.getKey(), entrySet.getValue());
+                foundUser.getMoodRatings().put(day, foundEntry.getRatings());
+                userService.saveUser(foundUser);
+            }
+        }
+        return foundEntry;
     }
 
     @Override
