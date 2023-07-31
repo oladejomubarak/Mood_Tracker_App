@@ -48,12 +48,6 @@ public class MoodEntryServiceImpl implements MoodEntryService {
             if (moodEntry.getCreatedOn().equals(formattedDate)) throw new RuntimeException(
                     "You have already created mood entry for today, wait till tomorrow");
         }
-
-//        for (Integer presentDay: foundUser.getMoodRatings().keySet()) {
-//            if(presentDay.equals(day)) throw new RuntimeException("You have already created mood entry for today, " +
-//                    "wait till tomorrow");
-//        }
-
         MoodEntry moodEntry = new MoodEntry();
         moodEntry.setMood(Mood.valueOf(mood.getStringValue()));
         moodEntry.setRatings(mood.getDoubleValue());
@@ -64,9 +58,10 @@ public class MoodEntryServiceImpl implements MoodEntryService {
         // moodEntry.setOwner(foundUser.getUsername());
         moodEntry.setUser(foundUser);
         trackerRepository.save(moodEntry);
-        Map<Integer, Double> moodRatings = new HashMap<>();
-        moodRatings.put(day, moodEntry.getRatings());
-        foundUser.setMoodRatings(moodRatings);
+        for (Map.Entry<Integer, Double> entrySet : foundUser.getMoodRatings().entrySet()) {
+            if (entrySet.getKey().equals(day)) foundUser.getMoodRatings().remove(entrySet.getKey(), entrySet.getValue());
+        }
+        foundUser.getMoodRatings().put(day, moodEntry.getRatings());
         userService.saveUser(foundUser);
         return moodEntry;
     }

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.ToString;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,6 @@ public class AppUser {
     private String moodTrackerMessage;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private Map<Integer, Double> moodRatings;
+    private Map<Integer, Double> moodRatings = new HashMap<>();
 
 }
