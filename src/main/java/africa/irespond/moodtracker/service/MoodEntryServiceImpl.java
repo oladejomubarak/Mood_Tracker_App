@@ -76,11 +76,13 @@ public class MoodEntryServiceImpl implements MoodEntryService {
         MoodEntry foundEntry = findMood(moodTrackerId);
         LocalDate date = LocalDate.parse(foundEntry.getCreatedOn(), dateFormatter);
         int day = date.getDayOfMonth();
+        int month = date.getMonthValue();
+        int year = date.getYear();
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         modelMapper.map(moodDto, foundEntry);
         foundEntry.setUpdatedOn(formattedDate);
         trackerRepository.save(foundEntry);
-        if(moodDto.getMood() != null || !moodDto.getMood().equals("")) {
+        if(moodDto.getMood() != null && LocalDate.now().getMonthValue() == month && LocalDate.now().getYear() == year) {
             for (Map.Entry<Integer, Double> entrySet : foundUser.getMoodRatings().entrySet()) {
                 if (entrySet.getKey().equals(day))
                     foundUser.getMoodRatings().remove(entrySet.getKey(), entrySet.getValue());
